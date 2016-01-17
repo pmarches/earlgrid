@@ -21,8 +21,8 @@
 	<classpathentry kind="lib" path="lib/log4j-api-2.4.1.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-core-2.4.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.2.jar"/>
-	<classpathentry kind="lib" path="lib/swt-4.4.2-win-64.jar" sourcepath="lib/swt-src.zip"/>
 	<classpathentry kind="lib" path="lib/jackson-core-2.6.3.jar"/>
 	<classpathentry kind="lib" path="lib/json-path-2.1.0.jar" sourcepath="lib/json-path-2.1.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib/swt-linux-debug.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

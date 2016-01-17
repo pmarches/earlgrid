@@ -1,4 +1,4 @@
-FROM ubuntu:14.10
+FROM ubuntu:15.10
 MAINTAINER Philippe Marchesseault <pmarches@gmail.com>
 
 RUN apt-get update
@@ -18,5 +18,5 @@ EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
 
 RUN mkdir -m 700 /root/.ssh
-COPY unittest/testSSHKey_rsa.pub /root/.ssh/authorized_keys
+COPY testSSHKey_rsa.pub /root/.ssh/authorized_keys
 RUN chmod 600 /root/.ssh/authorized_keys
