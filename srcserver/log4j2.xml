@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%msg   %highlight{%c{1.} [%t] %d{HH:mm:ss.SSS}}%n"/>
+    </Console>
+  </Appenders>
+  
+  <Loggers>
+    <Logger name="com.earlgrid" level="TRACE"/>
+    <Root level="WARN">
+      <AppenderRef ref="Console"/>
+    </Root>
+  </Loggers>
+</Configuration>
