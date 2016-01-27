@@ -8,6 +8,9 @@ import com.earlgrid.core.serverside.EarlGridPb.PbExceptionSpecification;
 import com.earlgrid.core.serverside.EarlGridPb.PbTopLevel;
 import com.earlgrid.remoting.TopLevelResponseFuture;
 
+/**
+ * Represents a connection to the remote end, responsible for completing the pending futures when a response is received.
+ */
 public class IOConnection {
   private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(IOConnection.class);
   IOThread ioThread;

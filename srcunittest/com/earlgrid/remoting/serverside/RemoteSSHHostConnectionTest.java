@@ -7,20 +7,19 @@ import java.io.File;
 import org.junit.Test;
 
 import com.earlgrid.remoting.RemoteHostConfiguration;
-import com.earlgrid.remoting.RemotingClient;
 import com.earlgrid.remoting.SSHRemotingClient;
 import com.earlgrid.remoting.UserCredentials;
 
 public class RemoteSSHHostConnectionTest {
   @Test
   public void test() throws Exception {
-    UserCredentials pkCredentials=new UserCredentials("root", new File("unittest/testSSHKey_rsa"));
+    UserCredentials pkCredentials=new UserCredentials("root", new File("srcunittest/testSSHKey_rsa"));
     RemoteHostConfiguration conf=new RemoteHostConfiguration("localhost", 8022, pkCredentials);
-    RemotingClient client = new SSHRemotingClient(conf, null);
-    for(int i=0;i<100; i++){
+    SSHRemotingClient client = new SSHRemotingClient(conf, null);
+    for(int i=0;i<2; i++){
       assertTrue(client.ping());
     }
-    client.shutdownRemoteEnd();
+    client.shutdown();
   }
 
 }

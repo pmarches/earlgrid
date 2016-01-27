@@ -37,7 +37,7 @@ public class RemotingClientTest {
   
   @AfterClass
   public static void teardown() throws IOException{
-    client.shutdownRemoteEnd();
+    client.shutdown();
   }
 
   @Test

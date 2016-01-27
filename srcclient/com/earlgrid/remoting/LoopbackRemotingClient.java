@@ -16,11 +16,6 @@ public class LoopbackRemotingClient extends RemotingClient {
   }
 
   @Override
-  public void shutdownRemoteEnd() throws IOException {
-    super.shutdownRemoteEnd();
-  }
-
-  @Override
   public String getName() {
     return "local";
   }

@@ -14,10 +14,11 @@ import com.jcraft.jsch.SftpException;
 import com.jcraft.jsch.SftpProgressMonitor;
 
 public class RemoteSSHHostConnection implements AutoCloseable {
+  private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(RemoteSSHHostConnection.class);
   private static final String REMOTE_BASE_DIR = ".EarlGrid";
   private static final String REMOTE_CLASSES_DIR = REMOTE_BASE_DIR+"/classes";
   private static final String REMOTE_JVM_DIR = REMOTE_BASE_DIR+"/jvm";
-
+  
   Session sshSession;
   ChannelExec execChannel;
   private IOEndPoint endPoint;
@@ -47,6 +48,7 @@ public class RemoteSSHHostConnection implements AutoCloseable {
   private void startRemoteJavaProcess(RemoteHostConfiguration remoteHostConf, String[] remoteClassPath, Class remoteServerMainClass) throws Exception {
     String remoteClassPathStr=StringJoin(remoteHostConf.classPathSeparator, remoteClassPath);
     String remoteJavaCommand=remoteHostConf.jvmPath+" "+remoteHostConf.getJVMOptions()+" -cp "+remoteClassPathStr+" "+remoteServerMainClass.getName();
+    log.debug("remoteJavaCommand="+remoteJavaCommand);
     
     execChannel=(ChannelExec) sshSession.openChannel("exec");
     execChannel.setCommand(remoteJavaCommand);

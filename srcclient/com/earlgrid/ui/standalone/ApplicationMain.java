@@ -37,7 +37,12 @@ public class ApplicationMain {
       client.executeCommand(userEnteredCommandText);
     } catch(ServerSideHasShutDownException e){
       //We shutdown differently if the server-side has shutdown first. No need to send a shutdown request..
-      client.shutdownLocalEnd();
+      try {
+        client.shutdownLocalEnd();
+      } catch (IOException e1) {
+        // TODO Auto-generated catch block
+        e1.printStackTrace();
+      }
       display.dispose();
     } catch (Exception e) {
       display.asyncExec(new Runnable(){
@@ -95,8 +100,7 @@ public class ApplicationMain {
   public void exitApplication() {
     try {
       if (client != null) {
-        client.shutdownRemoteEnd();
-        client.shutdownLocalEnd();
+        client.shutdown();
       }
     } catch (Exception e) {
       e.printStackTrace();

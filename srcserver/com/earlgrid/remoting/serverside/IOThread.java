@@ -6,6 +6,13 @@ import java.util.concurrent.BlockingQueue;
 import com.earlgrid.core.serverside.EarlGridPb.PbTopLevel;
 
 /**
+ * Responsible for the actual IO with the endpoints. 
+ *  - Works asynchronously
+ *  - Will notify the IOConnection when a new message arrives.
+ *  
+ *  
+ *  
+ * 
  * Principle of operations:
  * 3 types of message exist: Request, Response, Notification.
  * 
@@ -26,6 +33,7 @@ public class IOThread {
   private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(IOThread.class);
   private IOEndPoint endpoint;
   private volatile boolean keepReadingAndWriting=true;
+  private volatile boolean disconnectCommandHasBeenSentToRemoteEndPoint=false;
   String threadNamePrefix;
   private IOConnection ioConnection;
   BlockingQueue<PbTopLevel> requestsPendingWrite=new ArrayBlockingQueue<>(10);
@@ -87,6 +95,7 @@ public class IOThread {
   };
 
   public void start(){
+    writeThread.setDaemon(true);
     writeThread.start();
     readThread.start();
   }

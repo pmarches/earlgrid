@@ -29,6 +29,9 @@ import com.earlgrid.remoting.serverside.IOConnectionMessageHandler;
 import com.earlgrid.remoting.serverside.IOEndPoint;
 import com.google.protobuf.ByteString;
 
+/**
+ * This class is the high level communication API with the remote end.
+ */
 public abstract class RemotingClient implements IOConnectionMessageHandler {
   private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(RemotingClient.class);
   protected IOConnection ioConnection;
@@ -99,14 +102,19 @@ public abstract class RemotingClient implements IOConnectionMessageHandler {
     return remotingMsg.hasPong()&& remotingMsg.getPong();
   }
 
+  public void shutdown() throws IOException {
+    shutdownRemoteEnd();
+    shutdownLocalEnd();
+  }
+
   public void shutdownRemoteEnd() throws IOException {
     PbRemoting.Builder shutdownMessage=PbRemoting.newBuilder();
     shutdownMessage.setShutdown(true);
     PbTopLevel.Builder shutdownRequest=PbTopLevel.newBuilder().setRemoting(shutdownMessage);
-    ioConnection.queueRequest(shutdownRequest);
+    ioConnection.queueNotification(shutdownRequest);
   }
 
-  public void shutdownLocalEnd() {
+  public void shutdownLocalEnd() throws IOException {
     ioConnection.stopAndWaitForAllRequestsToComplete();
   }
 

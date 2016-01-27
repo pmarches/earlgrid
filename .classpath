@@ -9,7 +9,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="lib/jparsec-2.2.1.jar"/>
 	<classpathentry kind="lib" path="lib/jsch-0.1.53.jar"/>
-	<classpathentry kind="lib" path="lib/protobuf-java-3.0.0-alpha-2.jar"/>
+	<classpathentry kind="lib" path="lib/protobuf-java-3.0.0-alpha-2.jar" sourcepath="lib/protobuf-java-3.0.0-alpha-2-sources.jar"/>
 	<classpathentry kind="lib" path="lib/super-csv-2.3.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-cli-1.3.1.jar"/>
 	<classpathentry kind="lib" path="lib/org.tmatesoft.sqljet_1.1.10.r1317_v20140121_0107.jar"/>

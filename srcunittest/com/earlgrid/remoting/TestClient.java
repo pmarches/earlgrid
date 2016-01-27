@@ -70,8 +70,7 @@ public class TestClient implements SessionModelChangeObserver, AutoCloseable {
 
   @Override
   public void close() throws Exception {
-    client.shutdownRemoteEnd();
-    client.shutdownLocalEnd();
+    client.shutdown();
   }
   
   /**

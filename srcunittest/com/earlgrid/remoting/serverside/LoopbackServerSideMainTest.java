@@ -18,6 +18,6 @@ public class LoopbackServerSideMainTest {
     
     client.execute("seq 1 10");
 //    assertEquals(TaskExitStatus.OK_EXIT_STATUS, lsOutput.exitStatus);
-    loopBack.shutdownRemoteEnd();
+    loopBack.shutdown();
   }
 }
