@@ -25,6 +25,7 @@ public class CommandLineInputAreaKeyHandler extends HiearchicalKeyListener {
       handleRecallCommandFromHistory(keyEvent);
     }
     else if(isExecuteCommand(keyEvent)){
+      keyEvent.doit=false;
       handleExecuteCommand();
     }
     else if(isSwitchToMetaMode(keyEvent)){
@@ -103,7 +104,7 @@ public class CommandLineInputAreaKeyHandler extends HiearchicalKeyListener {
   }
 
   private boolean isExecuteCommand(KeyEvent keyEvent) {
-    return keyEvent.keyCode==13;
+    return keyEvent.keyCode=='\r' || keyEvent.keyCode=='\n';
   }
 
   private boolean isOpenMultiLineEditor(KeyEvent keyEvent) {

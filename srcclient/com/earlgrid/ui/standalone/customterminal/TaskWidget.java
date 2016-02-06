@@ -16,6 +16,7 @@ import org.eclipse.nebula.widgets.nattable.style.VerticalAlignmentEnum;
 import org.eclipse.nebula.widgets.nattable.util.GUIHelper;
 import org.eclipse.nebula.widgets.nattable.viewport.ViewportLayer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -24,7 +25,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 
 import com.earlgrid.core.session.ExecutionHistoryRecord;
 import com.earlgrid.core.session.ExecutionHistoryRecord.TaskExecutionState;
@@ -64,12 +64,14 @@ public class TaskWidget extends Composite implements SessionModelChangeObserver 
     promptLabel.setText(">");
     ApplicationMainWindow.configureLookOfControlFromParent(promptLabel);
     
-    Text taskCommandLine=new Text(this, SWT.NONE);
+    StyledText taskCommandLine=new StyledText(this, SWT.READ_ONLY);
+//    Label taskCommandLine=new Label(this, SWT.NONE);
     taskCommandLine.setEditable(false);
     taskCommandLine.setText(record.userEditedCommand);
     ApplicationMainWindow.configureLookOfControlFromParent(taskCommandLine);
     taskCommandLine.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
     taskCommandLine.addFocusListener(forceFocusToParent);
+    taskCommandLine.setForeground(getDisplay().getSystemColor(SWT.COLOR_GREEN));
 
     Label collapseIcon=new Label(this, SWT.NONE);
     collapseIcon.setImage(ResourceCache.getInstance().COLLAPSE_ICON);
@@ -79,7 +81,7 @@ public class TaskWidget extends Composite implements SessionModelChangeObserver 
     taskStateIcon.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false));
     updateStateIcon();
 
-    createOutputTable();
+    createOutputGrid();
   }
 
   private void updateStateIcon() {
@@ -115,7 +117,7 @@ public class TaskWidget extends Composite implements SessionModelChangeObserver 
     return preferedSize;
   }
   
-  void createOutputTable(){
+  void createOutputGrid(){
     bodyDataLayer = new DataLayer(){
       @Override
       public int getColumnCount() {

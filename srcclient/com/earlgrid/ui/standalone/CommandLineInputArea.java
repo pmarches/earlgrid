@@ -1,12 +1,12 @@
 package com.earlgrid.ui.standalone;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Text;
 
 import com.earlgrid.ui.decorators.CWDDecorator;
 import com.earlgrid.ui.decorators.InputAreaStateIndicatorDecorator;
@@ -17,7 +17,7 @@ public class CommandLineInputArea extends Composite {
   ApplicationMainWindow terminalWindow;
   public ApplicationMain app;
 
-  Text commandLineTxt;
+  StyledText commandLineTxt;
   Composite northContributionArea;
   Composite southContributionArea;
   Composite eastContributionArea;
@@ -37,7 +37,7 @@ public class CommandLineInputArea extends Composite {
     createNorthContributionArea();
     createWestContributionArea();
     
-    commandLineTxt = new Text(this, SWT.NONE);
+    commandLineTxt = new StyledText(this, SWT.NONE);
     commandLineTxt.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
     commandLineTxt.addKeyListener(new CommandLineInputAreaKeyHandler(terminalWindow.appKeyListener, this));
     commandLineTxt.addTraverseListener(preventTraversal);
@@ -56,6 +56,7 @@ public class CommandLineInputArea extends Composite {
 
   private void createWestContributionArea() {
     westContributionArea=createContributionArea();
+    westContributionArea.setBackground(getDisplay().getSystemColor(SWT.COLOR_GREEN));
     westContributionArea.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
   }
 
@@ -105,9 +106,12 @@ public class CommandLineInputArea extends Composite {
   }
 
   public String getAndClearText() {
-    String txt=commandLineTxt.getText();
+    String commandStringFromInputArea=commandLineTxt.getText();
+    if('\n'==commandStringFromInputArea.charAt(commandStringFromInputArea.length()-1)){
+      commandStringFromInputArea=commandStringFromInputArea.substring(0, commandStringFromInputArea.length()-1);
+    }
     commandLineTxt.setText("");
-    return txt;
+    return commandStringFromInputArea;
   }
 
   @Override

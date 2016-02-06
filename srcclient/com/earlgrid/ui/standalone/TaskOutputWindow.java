@@ -33,7 +33,6 @@ public class TaskOutputWindow extends Composite {
     setLayout(new FillLayout(SWT.VERTICAL));
 
     TaskWidget taskWidget=new TaskWidget(this, SWT.NONE, taskModel);
-//    widget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true ,true));
     taskWidget.addKeyListener(keyHandler);
     taskWidget.setFocus();
     

@@ -72,11 +72,12 @@ public class ApplicationMain {
       mainWindow = new ApplicationMainWindow(this);
       mainWindow.open();
       //////////////////// FIXME TESTING STUFF HERE /////////////////////
-      if(false){
+      if(true){
         try {
           client.requestCommandExecution("mock output 11 5");
-          client.requestCommandExecution("mock who|delay");
-          client.requestCommandExecution("mock output 3 200");
+          client.requestCommandExecution("mock who");
+//          client.requestCommandExecution("mock who|delay");
+//          client.requestCommandExecution("mock output 3 200");
         } catch (Exception e) {
           e.printStackTrace();
         }
