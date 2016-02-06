@@ -56,7 +56,7 @@ public class PipelineExecutor implements ThreadFactory {
     }
     threadPool.shutdown();
 
-    ForwardSessionModelChanges forwardChangesToSessionModel=new ForwardSessionModelChanges(cmdChain.getUserEditedCommand(), session.getSessionModel(), taskId);
+    ForwardSessionModelChanges forwardChangesToSessionModel=new ForwardSessionModelChanges(session.getSessionModel(), taskId);
     forwardChangesToSessionModel.bindIOQueue(inputQueue, null);
     forwardChangesToSessionModel.run();
     

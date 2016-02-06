@@ -8,7 +8,7 @@ import com.earlgrid.remoting.UserCredentials;
 
 public class HostManager extends ArrayList<RemoteHostConfiguration>{
   public HostManager() {
-    UserCredentials pkCredentials=new UserCredentials("root", new File("/home/pmarches/projects/earlgrid/earlgrid/srcunittest/testSSHKey_rsa"));
+    UserCredentials pkCredentials=new UserCredentials("root", new File("srcunittest/testSSHKey_rsa"));
     RemoteHostConfiguration defaultHost = new RemoteHostConfiguration("localhost", 8022, pkCredentials);
     add(defaultHost);
 

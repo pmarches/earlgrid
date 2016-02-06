@@ -14,7 +14,7 @@ public class LsCmdSpecificationTest {
   public void testExecuteLs() throws Exception {
     TestClient testClient=new TestClient();
     
-    ExecutionHistoryRecord ls=testClient.execute("ls -l /tmp");
+    ExecutionHistoryRecord ls=testClient.requestCommandExecution("ls -l /tmp");
 //    assertEquals(TaskExitStatus.OK_EXIT_STATUS, ls.exitStatus);
     assertEquals("Name", ls.out.getColumnHeader().get(0).name);
     assertEquals("Size", ls.out.getColumnHeader().get(1).name);

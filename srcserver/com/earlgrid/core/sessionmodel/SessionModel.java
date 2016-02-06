@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.earlgrid.core.session.ExecutionHistory;
 import com.earlgrid.core.session.ExecutionHistoryRecord;
 import com.earlgrid.core.session.SessionEnvironmentVariables;
+import com.earlgrid.core.shellparser.ResolvedCommandChain;
 
 //TODO Should keep the server-side model info in a server-side version of the session model. (taskIdCounter)
 public class SessionModel implements SessionModelChangeObserver {
@@ -52,7 +53,7 @@ public class SessionModel implements SessionModelChangeObserver {
   }
 
   public int getNextTaskId() {
-    //This is called only when the sessionModel is instanciated on the server-side
+    //This is called only when the sessionModel is instantiated on the server-side
     return taskIdCounter.getAndIncrement();
   }
 
@@ -76,11 +77,11 @@ public class SessionModel implements SessionModelChangeObserver {
   }
 
   @Override
-  public void onUpstreamTaskBegin(TaskBeginStatus commandBegun) {
-    history.appendHistoryRecord(new ExecutionHistoryRecord(commandBegun.getTaskId(), commandBegun.getUserEditedCommandLine()));
-    directObserver.onUpstreamTaskBegin(commandBegun);
+  public void onUpstreamTaskCreated(TaskCreatedStatus taskCreated) {
+    history.appendHistoryRecord(new ExecutionHistoryRecord(taskCreated.getTaskId(), taskCreated.getRequestIdThatCreatedThisTask(), taskCreated.getUserEditedCommandLine()));
+    directObserver.onUpstreamTaskCreated(taskCreated);
   }
-
+  
   @Override
   public void onUpstreamTaskFinished(TaskExitStatus exitStatus) {
     ExecutionHistoryRecord taskRecord=history.get(exitStatus.getTaskId());
@@ -102,17 +103,17 @@ public class SessionModel implements SessionModelChangeObserver {
    * @param newExecutionRecord
    * @throws Exception
    */
+  @Deprecated
   public void appendHistoryRecord(ExecutionHistoryRecord newExecutionRecord) throws Exception {
     if(getNextTaskId()!=newExecutionRecord.taskId){
       throw new Exception("Mock tasks need to be created in the proper order. You tried adding the mock task with id="+newExecutionRecord.taskId);
     }
     
-    onUpstreamTaskBegin(new TaskBeginStatus(newExecutionRecord.taskId, newExecutionRecord.userEditedCommand));
+    onUpstreamTaskCreated(new TaskCreatedStatus(newExecutionRecord.taskId, -1, newExecutionRecord.userEditedCommand));
     onUpstreamColumnHeader(newExecutionRecord.out.columnHeader);
     for(TabularOutputRow row : newExecutionRecord.out.rows){
       onUpstreamOutputRow(row);
     }
     onUpstreamTaskFinished(new TaskExitStatus(newExecutionRecord.taskId));
   }
-
 }

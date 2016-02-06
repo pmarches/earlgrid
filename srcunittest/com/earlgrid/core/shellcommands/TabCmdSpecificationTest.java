@@ -13,9 +13,9 @@ public class TabCmdSpecificationTest {
   @Test
   public void testPerformComputation() throws Exception {
     TestClient testClient=new TestClient();
-    testClient.execute("mock ls");
+    testClient.requestCommandExecution("mock ls");
 
-    ExecutionHistoryRecord execLsRecord = testClient.execute("history 0 | tab");
+    ExecutionHistoryRecord execLsRecord = testClient.requestCommandExecution("history 0 | tab");
     TabularOutput out = execLsRecord.getOut();
     assertEquals("result was "+execLsRecord.getOut().toString(), 3, out.getRowCount());
     assertArrayEquals(new String[]{"drwxrwxr-x", "3", "pmarches", "pmarches", "4096", "May", "6", "14:58", "dir1"}, out.getRow(0).getAllCells());

@@ -12,8 +12,8 @@ public class HistoryCmdSpecificationTest {
   public void testRecallHistory() throws Exception {
     TestClient testClient=new TestClient();
     
-    ExecutionHistoryRecord mockWho=testClient.execute("mock who");
-    ExecutionHistoryRecord historyRecord=testClient.execute("history 0");
+    ExecutionHistoryRecord mockWho=testClient.requestCommandExecution("mock who");
+    ExecutionHistoryRecord historyRecord=testClient.requestCommandExecution("history 0");
     assertEquals(mockWho.getOut(), historyRecord.getOut());
     assertEquals("pmarches", historyRecord.out.getRow(0).getCellAtColumn(0));
 
@@ -23,9 +23,9 @@ public class HistoryCmdSpecificationTest {
   @Test
   public void testRecallHistoryAnPipe() throws Exception {
     TestClient testClient=new TestClient();
-    testClient.execute("mock who");
+    testClient.requestCommandExecution("mock who");
     
-    ExecutionHistoryRecord historyPipeWcRecord=testClient.execute("history 0|wc");
+    ExecutionHistoryRecord historyPipeWcRecord=testClient.requestCommandExecution("history 0|wc");
     assertEquals("3", historyPipeWcRecord.out.getRow(0).getCellAtColumn(0));
 
     testClient.close();

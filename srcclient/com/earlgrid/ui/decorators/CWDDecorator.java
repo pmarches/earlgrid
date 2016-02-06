@@ -1,18 +1,18 @@
 package com.earlgrid.ui.decorators;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+
 import com.earlgrid.core.sessionmodel.ChangeCurrentWorkingDirectorySessionModelEvent;
 import com.earlgrid.core.sessionmodel.RemoveTaskFromHistorySessionModelEvent;
 import com.earlgrid.core.sessionmodel.SessionModelChangeObserver;
 import com.earlgrid.core.sessionmodel.TabularOutputColumnHeader;
 import com.earlgrid.core.sessionmodel.TabularOutputRow;
-import com.earlgrid.core.sessionmodel.TaskBeginStatus;
+import com.earlgrid.core.sessionmodel.TaskCreatedStatus;
 import com.earlgrid.core.sessionmodel.TaskExitStatus;
 import com.earlgrid.ui.standalone.ApplicationMainWindow;
 import com.earlgrid.ui.standalone.CommandLineInputArea;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 
 public class CWDDecorator extends CommandLineInputAreaDecorator implements SessionModelChangeObserver {
   private final CommandLineInputArea commandLineInputArea;
@@ -35,7 +35,7 @@ public class CWDDecorator extends CommandLineInputAreaDecorator implements Sessi
   }
 
   @Override
-  public void onUpstreamTaskBegin(TaskBeginStatus commandBegun) {
+  public void onUpstreamTaskCreated(TaskCreatedStatus taskCreated) {
   }
 
   @Override

@@ -12,7 +12,7 @@ public class SeqCmdSpecificationTest {
   @Test
   public void testExecuteSeq() throws Exception {
     TestClient testClient=new TestClient();
-    ExecutionHistoryRecord seqPipeWc=testClient.execute("seq 1 10|wc");
+    ExecutionHistoryRecord seqPipeWc=testClient.requestCommandExecution("seq 1 10|wc");
     assertEquals("seq 1 10|wc", seqPipeWc.userEditedCommand);
     assertEquals("10", seqPipeWc.out.getRow(0).getCellAtColumn(0));
     testClient.close();

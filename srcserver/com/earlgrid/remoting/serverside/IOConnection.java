@@ -14,7 +14,7 @@ import com.earlgrid.remoting.TopLevelResponseFuture;
 public class IOConnection {
   private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(IOConnection.class);
   IOThread ioThread;
-  private AtomicInteger messageIdCounter=new AtomicInteger();
+  private AtomicInteger requestIdCounter=new AtomicInteger();
   ConcurrentHashMap<Integer, TopLevelResponseFuture> requestsAwaitingCompletion=new ConcurrentHashMap<>();
   private IOConnectionMessageHandler messageHandler;
 
@@ -30,16 +30,23 @@ public class IOConnection {
   }
 
   public void queueResponse(PbTopLevel.Builder responseMsg){
-    responseMsg.setMessageType(PbTopLevel.MessageType.RESPONSE);
+    if(responseMsg.hasRequestId()==false){
+      throw new RuntimeException("The response "+responseMsg+" is missing it's source requestId");
+    }
+    responseMsg.setMessageType(PbTopLevel.MessageType.NOTIFICATION); //FIXME This line might not be needed, the type might already havebeen set.
     ioThread.queueMessage(responseMsg.build());
   }
 
+  public int nextRequestId() {
+    return requestIdCounter.incrementAndGet();
+  }
+  
   public TopLevelResponseFuture queueRequest(PbTopLevel.Builder request){
-    int thisMessageId=messageIdCounter.incrementAndGet();
+    int thisRequestId=nextRequestId();
     request.setMessageType(PbTopLevel.MessageType.REQUEST);
-    request.setRequestId(thisMessageId);
-    TopLevelResponseFuture responseFuture = new TopLevelResponseFuture(thisMessageId);
-    this.requestsAwaitingCompletion.put(thisMessageId, responseFuture);
+    request.setRequestId(thisRequestId);
+    TopLevelResponseFuture responseFuture = new TopLevelResponseFuture(thisRequestId);
+    this.requestsAwaitingCompletion.put(thisRequestId, responseFuture);
 
     ioThread.queueMessage(request.build());
     return responseFuture;
@@ -82,23 +89,24 @@ public class IOConnection {
 
     if(topLevelMsg.getMessageType()==PbTopLevel.MessageType.NOTIFICATION){
       messageHandler.onNotificationOrRequestReceived(topLevelMsg);
+
+      if(topLevelMsg.hasRequestHasCompleted() && topLevelMsg.getRequestHasCompleted()){
+        TopLevelResponseFuture responseFuture=requestsAwaitingCompletion.remove(topLevelMsg.getRequestId());
+        if(responseFuture==null){
+          log.error("received a response about requestId="+topLevelMsg.getRequestId()+" that we have no record of sending.");
+          return;
+        }
+        if(topLevelMsg.hasExceptionOccured()){
+          responseFuture.completeExceptionally(convertExceptionSpecificationToException(topLevelMsg.getExceptionOccured()));
+        }
+        else{
+          responseFuture.complete(topLevelMsg);
+        }
+      }
     }
     else if(topLevelMsg.getMessageType()==PbTopLevel.MessageType.REQUEST){
       //TODO Use Threadpool here?
       new Thread(()-> messageHandler.onNotificationOrRequestReceived(topLevelMsg)).start();
-    }
-    else if(topLevelMsg.getMessageType()==PbTopLevel.MessageType.RESPONSE){
-      TopLevelResponseFuture responseFuture=requestsAwaitingCompletion.remove(topLevelMsg.getRequestId());
-      if(responseFuture==null){
-        log.error("received a response about messageId="+topLevelMsg.getRequestId()+" that we have no record of sending.");
-        return;
-      }
-      if(topLevelMsg.hasExceptionOccured()){
-        responseFuture.completeExceptionally(convertExceptionSpecificationToException(topLevelMsg.getExceptionOccured()));
-      }
-      else{
-        responseFuture.complete(topLevelMsg);
-      }
     }
     else{
       log.error("Unhandeled message "+topLevelMsg);
@@ -106,9 +114,14 @@ public class IOConnection {
   }
   
   public PbTopLevel.Builder createResponseForRequest(PbTopLevel topMsgRequest) {
+    return createResponseForRequest(topMsgRequest.getRequestId());
+  }
+
+  public PbTopLevel.Builder createResponseForRequest(int requestIdOfRequest) {
     PbTopLevel.Builder topMsgResponse=PbTopLevel.newBuilder();
-    topMsgResponse.setMessageType(PbTopLevel.MessageType.RESPONSE);
-    topMsgResponse.setRequestId(topMsgRequest.getRequestId());
+    topMsgResponse.setMessageType(PbTopLevel.MessageType.NOTIFICATION);
+    topMsgResponse.setRequestId(requestIdOfRequest);
+    topMsgResponse.setRequestHasCompleted(true);
     return topMsgResponse;
   }
 

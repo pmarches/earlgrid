@@ -20,24 +20,24 @@ import java.util.Arrays;
 import com.earlgrid.core.serverside.EarlGridPb.PbExceptionSpecification;
 import com.earlgrid.core.serverside.EarlGridPb.PbExecutableCode;
 import com.earlgrid.core.serverside.EarlGridPb.PbFileSystemManagement;
+import com.earlgrid.core.serverside.EarlGridPb.PbFileSystemManagement.PbOperation;
 import com.earlgrid.core.serverside.EarlGridPb.PbFileSystemObjectSpecification;
 import com.earlgrid.core.serverside.EarlGridPb.PbInteractiveForm;
 import com.earlgrid.core.serverside.EarlGridPb.PbPathSpecification;
 import com.earlgrid.core.serverside.EarlGridPb.PbRemoting;
 import com.earlgrid.core.serverside.EarlGridPb.PbRemoveTaskFromHistory;
 import com.earlgrid.core.serverside.EarlGridPb.PbSessionModelChange;
-import com.earlgrid.core.serverside.EarlGridPb.PbTopLevel;
-import com.earlgrid.core.serverside.EarlGridPb.PbFileSystemManagement.PbOperation;
 import com.earlgrid.core.serverside.EarlGridPb.PbSessionModelChange.PbTaskState;
+import com.earlgrid.core.serverside.EarlGridPb.PbTopLevel;
+import com.earlgrid.core.session.ExecutionHistoryRecord;
 import com.earlgrid.core.session.ServerSideShellSession;
 import com.earlgrid.core.sessionmodel.ChangeCurrentWorkingDirectorySessionModelEvent;
 import com.earlgrid.core.sessionmodel.RemoveTaskFromHistorySessionModelEvent;
 import com.earlgrid.core.sessionmodel.SessionModelChangeObserver;
 import com.earlgrid.core.sessionmodel.TabularOutputColumnHeader;
 import com.earlgrid.core.sessionmodel.TabularOutputRow;
-import com.earlgrid.core.sessionmodel.TaskBeginStatus;
+import com.earlgrid.core.sessionmodel.TaskCreatedStatus;
 import com.earlgrid.core.sessionmodel.TaskExitStatus;
-import com.earlgrid.core.shellparser.CommandLineInvocation;
 
 public class RemotingServerMain implements IOConnectionMessageHandler, SessionModelChangeObserver {
   private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(RemotingServerMain.class);
@@ -58,8 +58,7 @@ public class RemotingServerMain implements IOConnectionMessageHandler, SessionMo
         handleRemotingMessage(topLevelMsgRcv);
       }
       if(topLevelMsgRcv.hasUserAction()){
-        CommandLineInvocation userAction=CommandLineInvocation.newFromProtoBuf(topLevelMsgRcv.getUserAction());
-        session.handleCommandLineInvocation(userAction);
+        session.handleCommandLineInvocation(topLevelMsgRcv);
       }
       if(topLevelMsgRcv.hasFileSystemManagement()){
         handleFilesystemMessage(topLevelMsgRcv);
@@ -147,6 +146,12 @@ public class RemotingServerMain implements IOConnectionMessageHandler, SessionMo
           return FileVisitResult.SKIP_SUBTREE;
         }
         return FileVisitResult.CONTINUE;
+      }
+      
+      @Override
+      public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+        log.error("Failed to visit "+file+" because "+exc);
+        return FileVisitResult.SKIP_SUBTREE;
       }
     };
     Files.walkFileTree(startDirectory, visitorBackedBySelectionPredicate);
@@ -245,13 +250,13 @@ public class RemotingServerMain implements IOConnectionMessageHandler, SessionMo
   }
 
   @Override
-  public void onUpstreamTaskBegin(TaskBeginStatus taskBegunStatus) {
-    PbSessionModelChange.Builder sessionModelChange=PbSessionModelChange.newBuilder();
-    sessionModelChange.setTaskId(taskBegunStatus.getTaskId());
-    sessionModelChange.setCommandString(taskBegunStatus.userEditedCommandLine);
-    sessionModelChange.setTaskState(PbTaskState.RUNNING);
-    PbTopLevel.Builder topLevelMsg=PbTopLevel.newBuilder().setSessionModelChange(sessionModelChange);
-    connectionToClient.queueNotification(topLevelMsg);
+  public void onUpstreamTaskCreated(TaskCreatedStatus taskCreatedStatus) {
+    PbSessionModelChange.Builder sessionModelChangeMsg=PbSessionModelChange.newBuilder();
+    sessionModelChangeMsg.setTaskId(taskCreatedStatus.getTaskId());
+    sessionModelChangeMsg.setCommandString(taskCreatedStatus.getUserEditedCommandLine());
+    sessionModelChangeMsg.setTaskState(PbTaskState.RUNNING);
+    PbTopLevel.Builder taskCreatedResponse=PbTopLevel.newBuilder().setSessionModelChange(sessionModelChangeMsg);
+    connectionToClient.queueNotification(taskCreatedResponse);
   }
 
   @Override
@@ -259,7 +264,13 @@ public class RemotingServerMain implements IOConnectionMessageHandler, SessionMo
     PbSessionModelChange.Builder sessionModelChange=PbSessionModelChange.newBuilder();
     sessionModelChange.setTaskId(taskExitStatus.getTaskId());
     sessionModelChange.setTaskState(PbTaskState.FINISHED);
-    PbTopLevel.Builder topLevelMsg=PbTopLevel.newBuilder().setSessionModelChange(sessionModelChange);
+
+    ExecutionHistoryRecord taskHistory = session.getSessionModel().getHistory().get(taskExitStatus.getTaskId());
+    int messageIdOfRequest=taskHistory.getRequestIdThatCreatedThisTask();
+
+    PbTopLevel.Builder topLevelMsg=connectionToClient.createResponseForRequest(messageIdOfRequest);
+    topLevelMsg.setSessionModelChange(sessionModelChange);
+    topLevelMsg.setRequestHasCompleted(true);
     connectionToClient.queueNotification(topLevelMsg);
   }
 

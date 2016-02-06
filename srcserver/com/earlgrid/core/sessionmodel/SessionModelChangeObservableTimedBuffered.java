@@ -11,8 +11,8 @@ public class SessionModelChangeObservableTimedBuffered implements SessionModelCh
   }
 
   @Override
-  public void onUpstreamTaskBegin(TaskBeginStatus commandBegun) {
-    output.onUpstreamTaskBegin(commandBegun);
+  public void onUpstreamTaskCreated(TaskCreatedStatus taskCreated) {
+    output.onUpstreamTaskCreated(taskCreated);
   }
 
   @Override

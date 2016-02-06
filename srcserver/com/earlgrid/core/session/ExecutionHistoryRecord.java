@@ -6,6 +6,7 @@ public class ExecutionHistoryRecord {
   public String userEditedCommand;
   public TabularOutput out;
   public int taskId;
+  public int requestIdThatCreatedThisTask;
 
   public enum TaskExecutionState {RUNNING, STOPPED, SUSPENDED};
   TaskExecutionState state=TaskExecutionState.RUNNING;
@@ -13,8 +14,9 @@ public class ExecutionHistoryRecord {
   protected ExecutionHistoryRecord() {
   }
 
-  public ExecutionHistoryRecord(int taskId, String command) {
+  public ExecutionHistoryRecord(int taskId, int requestIdThatCreatedThisTask, String command) {
     super();
+    this.requestIdThatCreatedThisTask=requestIdThatCreatedThisTask;
     this.taskId=taskId;
     this.userEditedCommand = command;
     out=new TabularOutput(taskId);
@@ -35,5 +37,9 @@ public class ExecutionHistoryRecord {
   @Override
   public String toString() {
     return String.format("TaskId=%d command=%s", taskId, userEditedCommand);
+  }
+
+  public int getRequestIdThatCreatedThisTask() {
+    return requestIdThatCreatedThisTask;
   }
 }

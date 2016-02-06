@@ -14,14 +14,14 @@ public class CSVCmdSpecificationTest {
   @Test
   public void testPerformComputation() throws Exception {
     TestClient testClient=new TestClient();
-    ExecutionHistoryRecord mockRecord = testClient.execute("mock output 4 100");
+    ExecutionHistoryRecord mockRecord = testClient.requestCommandExecution("mock output 4 100");
     
     File tmpCSVFile=File.createTempFile(getClass().getSimpleName()+"-test", ".csv");
     tmpCSVFile.deleteOnExit();
-    ExecutionHistoryRecord csvWrite = testClient.execute("history 0 | csv -o "+TestClient.convertToUnixPath(tmpCSVFile));
+    ExecutionHistoryRecord csvWrite = testClient.requestCommandExecution("history 0 | csv -o "+TestClient.convertToUnixPath(tmpCSVFile));
     assertEquals(0, csvWrite.getOut().getRowCount());
 
-    ExecutionHistoryRecord csvRead = testClient.execute("csv -h -i "+TestClient.convertToUnixPath(tmpCSVFile));
+    ExecutionHistoryRecord csvRead = testClient.requestCommandExecution("csv -h -i "+TestClient.convertToUnixPath(tmpCSVFile));
     assertEquals("result was "+csvRead.getOut().toString(), mockRecord.getOut(), csvRead.getOut());
     testClient.close();
   }

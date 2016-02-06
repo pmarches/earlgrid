@@ -5,16 +5,13 @@ import com.earlgrid.core.sessionmodel.CmdExitStatus;
 import com.earlgrid.core.sessionmodel.SessionModelChangeObserver;
 import com.earlgrid.core.sessionmodel.TabularOutputColumnHeader;
 import com.earlgrid.core.sessionmodel.TabularOutputRow;
-import com.earlgrid.core.sessionmodel.TaskBeginStatus;
 import com.earlgrid.core.sessionmodel.TaskExitStatus;
 import com.earlgrid.core.shellcommands.BaseCmdSpecification;
 
-public class ForwardSessionModelChanges extends BaseCmdSpecification {
+public class ForwardSessionModelChanges extends BaseCmdSpecification<Object> {
   private SessionModelChangeObserver forwardToSessionModelChangeReceiver;
-  private String userEditedCommand;
   
-  public ForwardSessionModelChanges(String userEditedCommand, SessionModelChangeObserver forwardToSessionModelChangeReceiver, int taskId) {
-    this.userEditedCommand=userEditedCommand;
+  public ForwardSessionModelChanges(SessionModelChangeObserver forwardToSessionModelChangeReceiver, int taskId) {
     super.taskId=taskId;
     this.forwardToSessionModelChangeReceiver=forwardToSessionModelChangeReceiver;
   }
@@ -26,7 +23,6 @@ public class ForwardSessionModelChanges extends BaseCmdSpecification {
 
   @Override
   public void onUpstreamCommandBegun(CmdBeginStatus parentCommandBegun) throws Exception {
-    forwardToSessionModelChangeReceiver.onUpstreamTaskBegin(new TaskBeginStatus(getTaskId(), userEditedCommand));
   }
 
   @Override

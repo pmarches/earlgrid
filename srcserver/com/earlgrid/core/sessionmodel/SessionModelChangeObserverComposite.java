@@ -19,8 +19,8 @@ public class SessionModelChangeObserverComposite implements SessionModelChangeOb
   }
 
   @Override
-  public void onUpstreamTaskBegin(TaskBeginStatus commandBegun) {
-    observers.forEach(o -> o.onUpstreamTaskBegin(commandBegun));
+  public void onUpstreamTaskCreated(TaskCreatedStatus taskCreated) {
+    observers.forEach(o -> o.onUpstreamTaskCreated(taskCreated));
   }
 
   @Override

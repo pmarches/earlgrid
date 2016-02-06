@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class ResolvedCommandChain {
   public ArrayList<ResolvedSingleCommand> pipedCommands=new ArrayList<>();
   private String userEditedCommand;
+  private int taskId;
   
   public ResolvedCommandChain(String userEditedCommand) {
     this.userEditedCommand=userEditedCommand;
@@ -27,5 +28,13 @@ public class ResolvedCommandChain {
 
   public String getUserEditedCommand() {
     return userEditedCommand;
+  }
+
+  public int getTaskId() {
+    return taskId;
+  }
+
+  public void setTaskId(int taskId) {
+    this.taskId=taskId;
   }
 }

@@ -16,8 +16,8 @@ public class LoopbackServerSideMainTest {
       assertTrue(loopBack.ping());
     }
     
-    client.execute("seq 1 10");
+    client.requestCommandExecution("seq 1 10");
 //    assertEquals(TaskExitStatus.OK_EXIT_STATUS, lsOutput.exitStatus);
-    loopBack.shutdown();
+    loopBack.close();
   }
 }

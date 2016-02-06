@@ -5,10 +5,10 @@ import java.util.concurrent.CompletableFuture;
 import com.earlgrid.core.serverside.EarlGridPb.PbTopLevel;
 
 public class TopLevelResponseFuture extends CompletableFuture<PbTopLevel> {
-  private int messageId;
+  private int requestId;
   
-  public TopLevelResponseFuture(int messageId) {
-    this.messageId=messageId;
+  public TopLevelResponseFuture(int requestId) {
+    this.requestId=requestId;
   }
 
 }

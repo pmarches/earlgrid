@@ -5,11 +5,11 @@ message PbTopLevel {
   enum MessageType {
     NOTIFICATION=0;
     REQUEST=1;
-    RESPONSE=2;
   };
   optional MessageType messageType=1;
-  optional uint32 requestId=2; //This is set wheter it is a request or response
-  optional PbExceptionSpecification exceptionOccured=5;
+  optional uint32 requestId=2; //This is set wheter it is a request or response, but not for notifications. This acts as a client side cookie
+  optional bool requestHasCompleted=3; //Setting this to true indicates that no further responses will be emited regarding this request.
+  optional PbExceptionSpecification exceptionOccured=5; //TODO We should remove this boolean and just have a list of exceptions that may have occured.
   
   optional PbRemoting remoting=10;
   optional PbCommandLineUserAction userAction=20;

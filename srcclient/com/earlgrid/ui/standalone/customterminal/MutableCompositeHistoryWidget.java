@@ -1,15 +1,5 @@
 package com.earlgrid.ui.standalone.customterminal;
 
-import com.earlgrid.core.sessionmodel.ChangeCurrentWorkingDirectorySessionModelEvent;
-import com.earlgrid.core.sessionmodel.RemoveTaskFromHistorySessionModelEvent;
-import com.earlgrid.core.sessionmodel.SessionModelChangeObserver;
-import com.earlgrid.core.sessionmodel.TabularOutputColumnHeader;
-import com.earlgrid.core.sessionmodel.TabularOutputRow;
-import com.earlgrid.core.sessionmodel.TaskBeginStatus;
-import com.earlgrid.core.sessionmodel.TaskExitStatus;
-import com.earlgrid.ui.standalone.ApplicationMain;
-import com.earlgrid.ui.standalone.ApplicationMainWindow;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
@@ -23,6 +13,16 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Slider;
+
+import com.earlgrid.core.sessionmodel.ChangeCurrentWorkingDirectorySessionModelEvent;
+import com.earlgrid.core.sessionmodel.RemoveTaskFromHistorySessionModelEvent;
+import com.earlgrid.core.sessionmodel.SessionModelChangeObserver;
+import com.earlgrid.core.sessionmodel.TabularOutputColumnHeader;
+import com.earlgrid.core.sessionmodel.TabularOutputRow;
+import com.earlgrid.core.sessionmodel.TaskCreatedStatus;
+import com.earlgrid.core.sessionmodel.TaskExitStatus;
+import com.earlgrid.ui.standalone.ApplicationMain;
+import com.earlgrid.ui.standalone.ApplicationMainWindow;
 
 public class MutableCompositeHistoryWidget extends Composite implements SessionModelChangeObserver {
   private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(MutableCompositeHistoryWidget.class);
@@ -133,9 +133,9 @@ public class MutableCompositeHistoryWidget extends Composite implements SessionM
   }
 
   @Override
-  public void onUpstreamTaskBegin(TaskBeginStatus commandBegun) {
+  public void onUpstreamTaskCreated(TaskCreatedStatus taskCreated) {
     updateSliderMaximum();
-    lineBasedPanel.occupyArea(new LineBasedArea(app.getSessionModel().getHistory().get(commandBegun.getTaskId())));
+    lineBasedPanel.occupyArea(new LineBasedArea(app.getSessionModel().getHistory().get(taskCreated.getTaskId())));
     refreshAllTaskWidgets();
   }
 

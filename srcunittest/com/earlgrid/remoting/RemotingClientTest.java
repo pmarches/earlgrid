@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -16,10 +15,6 @@ import org.junit.Test;
 
 import com.earlgrid.core.serverside.EarlGridPb.PbFileSystemManagement;
 import com.earlgrid.core.serverside.EarlGridPb.PbTopLevel;
-import com.earlgrid.remoting.RemoteHostConfiguration;
-import com.earlgrid.remoting.RemotingClient;
-import com.earlgrid.remoting.SSHRemotingClient;
-import com.earlgrid.remoting.UserCredentials;
 import com.earlgrid.remoting.serverside.FileSelectionPredicate;
 
 public class RemotingClientTest {
@@ -27,17 +22,12 @@ public class RemotingClientTest {
 
   @BeforeClass
   public static void setup() throws Exception{
-//    client=new LoopbackRemotingClient(pipedEndPoints[1]);
-
-    UserCredentials pkCredentials=new UserCredentials("root", new File("/home/pmarches/projects/earlgrid/EarlGrid/unittest/testSSHKey_rsa"));
-    RemoteHostConfiguration conf=new RemoteHostConfiguration("localhost", 8022, pkCredentials);
-    TestClient testClient=new TestClient();
-    client = new SSHRemotingClient(conf, null);
+    client=TestClient.createNewSSHClient();
   }
   
   @AfterClass
   public static void teardown() throws IOException{
-    client.shutdown();
+    client.close();
   }
 
   @Test
@@ -81,6 +71,6 @@ public class RemotingClientTest {
   
   @Test
   public void testCommandLine() throws Exception{
-    client.executeCommand("who");
+    client.requestCommandExecution("who");
   }
 }

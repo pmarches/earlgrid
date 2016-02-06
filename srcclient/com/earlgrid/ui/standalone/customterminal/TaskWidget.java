@@ -1,17 +1,5 @@
 package com.earlgrid.ui.standalone.customterminal;
 
-import com.earlgrid.core.session.ExecutionHistoryRecord;
-import com.earlgrid.core.session.ExecutionHistoryRecord.TaskExecutionState;
-import com.earlgrid.core.sessionmodel.ChangeCurrentWorkingDirectorySessionModelEvent;
-import com.earlgrid.core.sessionmodel.RemoveTaskFromHistorySessionModelEvent;
-import com.earlgrid.core.sessionmodel.SessionModelChangeObserver;
-import com.earlgrid.core.sessionmodel.TabularOutputColumnHeader;
-import com.earlgrid.core.sessionmodel.TabularOutputRow;
-import com.earlgrid.core.sessionmodel.TaskBeginStatus;
-import com.earlgrid.core.sessionmodel.TaskExitStatus;
-import com.earlgrid.ui.standalone.ApplicationMainWindow;
-import com.earlgrid.ui.standalone.ResourceCache;
-
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.command.VisualRefreshCommand;
 import org.eclipse.nebula.widgets.nattable.config.CellConfigAttributes;
@@ -37,6 +25,18 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+
+import com.earlgrid.core.session.ExecutionHistoryRecord;
+import com.earlgrid.core.session.ExecutionHistoryRecord.TaskExecutionState;
+import com.earlgrid.core.sessionmodel.ChangeCurrentWorkingDirectorySessionModelEvent;
+import com.earlgrid.core.sessionmodel.RemoveTaskFromHistorySessionModelEvent;
+import com.earlgrid.core.sessionmodel.SessionModelChangeObserver;
+import com.earlgrid.core.sessionmodel.TabularOutputColumnHeader;
+import com.earlgrid.core.sessionmodel.TabularOutputRow;
+import com.earlgrid.core.sessionmodel.TaskCreatedStatus;
+import com.earlgrid.core.sessionmodel.TaskExitStatus;
+import com.earlgrid.ui.standalone.ApplicationMainWindow;
+import com.earlgrid.ui.standalone.ResourceCache;
 
 public class TaskWidget extends Composite implements SessionModelChangeObserver {
   private ExecutionHistoryRecord execRecord;
@@ -199,7 +199,7 @@ public class TaskWidget extends Composite implements SessionModelChangeObserver 
   }
 
   @Override
-  public void onUpstreamTaskBegin(TaskBeginStatus commandBegun) {
+  public void onUpstreamTaskCreated(TaskCreatedStatus taskCreated) {
     updateStateIcon();
   }
 

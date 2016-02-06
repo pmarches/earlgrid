@@ -12,8 +12,8 @@ public class DelayCmdSpecificationTest {
   public void testDelay() throws Exception {
     TestClient testClient=new TestClient();
     
-    ExecutionHistoryRecord mockWho=testClient.execute("mock who");
-    ExecutionHistoryRecord delayedRecord=testClient.execute("history 0|delay");
+    ExecutionHistoryRecord mockWho=testClient.requestCommandExecution("mock who");
+    ExecutionHistoryRecord delayedRecord=testClient.requestCommandExecution("history 0|delay");
     assertEquals(mockWho.getOut(), delayedRecord.getOut());
     assertEquals("pmarches", delayedRecord.out.getRow(0).getCellAtColumn(0));
 

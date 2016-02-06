@@ -14,13 +14,13 @@ public class ExternalProcessCmdSpecificationTest {
     org.junit.Assume.assumeTrue(System.getProperty("os.name").endsWith("Linux"));
 
     TestClient testClient=new TestClient();
-    testClient.execute("mock who");
+    testClient.requestCommandExecution("mock who");
   
-    ExecutionHistoryRecord mockComputation = testClient.client.getSessionModel().getHistory().get(1);
-    ExecutionHistoryRecord execCatRecord = testClient.execute("history 0 | exec cat");
+    ExecutionHistoryRecord mockComputation = testClient.getSessionModel().getHistory().get(1);
+    ExecutionHistoryRecord execCatRecord = testClient.requestCommandExecution("history 0 | exec cat");
     assertEquals("result was "+execCatRecord.getOut().toString(), mockComputation.out, execCatRecord.getOut());
 
-    ExecutionHistoryRecord execLsRecord = testClient.execute("history 0 | exec 'ls -l'");
+    ExecutionHistoryRecord execLsRecord = testClient.requestCommandExecution("history 0 | exec 'ls -l'");
     assertTrue("result was "+execLsRecord.getOut().toString(), execLsRecord.getOut().getRowCount()>10);
     testClient.close();
   }

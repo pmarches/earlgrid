@@ -34,7 +34,7 @@ public class ApplicationMain {
   public void acceptUserCommand(String userEnteredCommandText) {
     try {
       log.debug("accepted " + userEnteredCommandText);
-      client.executeCommand(userEnteredCommandText);
+      client.requestCommandExecution(userEnteredCommandText);
     } catch(ServerSideHasShutDownException e){
       //We shutdown differently if the server-side has shutdown first. No need to send a shutdown request..
       try {
@@ -74,9 +74,9 @@ public class ApplicationMain {
       //////////////////// FIXME TESTING STUFF HERE /////////////////////
       if(false){
         try {
-          client.executeCommand("mock output 11 5");
-          client.executeCommand("mock who|delay");
-          client.executeCommand("mock output 3 200");
+          client.requestCommandExecution("mock output 11 5");
+          client.requestCommandExecution("mock who|delay");
+          client.requestCommandExecution("mock output 3 200");
         } catch (Exception e) {
           e.printStackTrace();
         }
@@ -100,7 +100,7 @@ public class ApplicationMain {
   public void exitApplication() {
     try {
       if (client != null) {
-        client.shutdown();
+        client.close();
       }
     } catch (Exception e) {
       e.printStackTrace();

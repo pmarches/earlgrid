@@ -19,7 +19,7 @@ public class MockCmdSpecification extends BaseCmdSpecification<MockCmdArguments>
     else if(MockCmdArguments.LS.equals(args.subCommand)){
       createMockLs();
     }
-    else if(MockCmdArguments.OUT.equals(args.subCommand)){
+    else if(MockCmdArguments.OUTPUT.equals(args.subCommand)){
       ExecutionHistoryRecord newTask=createMockExecutionRecord(taskId, args.numberOfColumn, args.numberOfRows);
       emitTask(newTask);
     }
@@ -37,7 +37,7 @@ public class MockCmdSpecification extends BaseCmdSpecification<MockCmdArguments>
   }
 
   private void createMockLs() throws InterruptedException {
-    ExecutionHistoryRecord comp=new ExecutionHistoryRecord(taskId, "ls");
+    ExecutionHistoryRecord comp=new ExecutionHistoryRecord(taskId, -1, "ls");
     TabularOutput out=comp.getOut();
     out.getColumnHeader().setColumnHeaders("A");
     out.addRow(taskId, "drwxrwxr-x 3 pmarches pmarches      4096 May  6 14:58 dir1");
@@ -48,7 +48,7 @@ public class MockCmdSpecification extends BaseCmdSpecification<MockCmdArguments>
   }
 
   private void createMockUnixFind() throws InterruptedException {
-    ExecutionHistoryRecord comp=new ExecutionHistoryRecord(taskId, "find /tmp -size +0");
+    ExecutionHistoryRecord comp=new ExecutionHistoryRecord(taskId, -1, "find /tmp -size +0");
     TabularOutput out=comp.getOut();
     out.getColumnHeader().setColumnHeaders("A");
     out.addRow(taskId, "10354704   20 drwxr-xr-x   4 pmarches pmarches    20480 May  8 17:16 .");
@@ -63,7 +63,7 @@ public class MockCmdSpecification extends BaseCmdSpecification<MockCmdArguments>
   }
 
   private void createMockWho() throws InterruptedException {
-    ExecutionHistoryRecord comp=new ExecutionHistoryRecord(taskId, "who");
+    ExecutionHistoryRecord comp=new ExecutionHistoryRecord(taskId, -1, "who");
     TabularOutput out=comp.getOut();
     out.getColumnHeader().setColumnHeaders("Username", "Login", "What", "Host");
     out.addRow(taskId, "pmarches", "Wed Apr 22 16:54:13 PDT 2015", "who", "laptop");
@@ -73,7 +73,7 @@ public class MockCmdSpecification extends BaseCmdSpecification<MockCmdArguments>
   }
 
   static public ExecutionHistoryRecord createMockExecutionRecord(int taskId, int nbColumn, int nbRows) {
-    ExecutionHistoryRecord newTask=new ExecutionHistoryRecord(taskId, "mockComputation");
+    ExecutionHistoryRecord newTask=new ExecutionHistoryRecord(taskId, -1, "mockComputation");
     TabularOutput newOutput = newTask.getOut();
     String[] columnHeaders=new String[nbColumn];
     for(int columnIndex=0; columnIndex<nbColumn; columnIndex++){

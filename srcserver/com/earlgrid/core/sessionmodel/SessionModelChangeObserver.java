@@ -1,7 +1,7 @@
 package com.earlgrid.core.sessionmodel;
 
 public interface SessionModelChangeObserver {
-  void onUpstreamTaskBegin(TaskBeginStatus commandBegun);
+  void onUpstreamTaskCreated(TaskCreatedStatus taskCreated);
   void onUpstreamTaskFinished(TaskExitStatus exitStatus);
   void onUpstreamColumnHeader(TabularOutputColumnHeader columnHeader);
   void onUpstreamOutputRow(TabularOutputRow outputRow);

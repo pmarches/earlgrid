@@ -1,14 +1,17 @@
 package com.earlgrid.core.session;
 
+import org.eclipse.swt.graphics.Point;
+
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import com.earlgrid.core.execution.PipelineExecutor;
 import com.earlgrid.core.serverside.EarlGridPb.PbClientClipboard;
+import com.earlgrid.core.serverside.EarlGridPb.PbCommandLineUserAction.UserRequestedActionKind;
 import com.earlgrid.core.serverside.EarlGridPb.PbInteractiveForm;
 import com.earlgrid.core.serverside.EarlGridPb.PbTopLevel;
-import com.earlgrid.core.serverside.EarlGridPb.PbCommandLineUserAction.UserRequestedActionKind;
 import com.earlgrid.core.sessionmodel.SessionModel;
+import com.earlgrid.core.sessionmodel.TaskCreatedStatus;
 import com.earlgrid.core.shellcommands.CommandRegistry;
 import com.earlgrid.core.shellparser.CommandLineInvocation;
 import com.earlgrid.core.shellparser.CommandLineResolver;
@@ -18,8 +21,6 @@ import com.earlgrid.core.shellparser.UnResolvedCommandChain;
 import com.earlgrid.remoting.TopLevelResponseFuture;
 import com.earlgrid.remoting.serverside.RemotingServerMain;
 import com.earlgrid.remoting.serverside.ServerSideHasShutDownException;
-
-import org.eclipse.swt.graphics.Point;
 
 public class ServerSideShellSession {
   private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(ServerSideShellSession.class);
@@ -35,15 +36,10 @@ public class ServerSideShellSession {
     envVariableResolver=new CommandLineResolver(getSessionModel().sessionVariables);
   }
 
-  public int execute(ResolvedCommandChain commandchain) {
-    log.info("execute "+commandchain);
-//    ExecutionHistoryRecord thisExecutionRecord=new ExecutionHistoryRecord(commandchain.getUserEditedCommand());
-//    thisExecutionRecord.setExecutionIndex(getSessionModel().getNextComputationIndex());
-//    getSessionModel().computationHistory.appendComputation(thisExecutionRecord);
-    int taskId = getSessionModel().getNextTaskId();
-    PipelineExecutor executor=new PipelineExecutor(this, taskId);
+  public void executeTaskSync(ResolvedCommandChain commandchain) {
+    log.info("executeTaskSync "+commandchain);
+    PipelineExecutor executor=new PipelineExecutor(ServerSideShellSession.this, commandchain.getTaskId());
     executor.execute(commandchain);
-    return taskId;
   }
 
   public List<ResolvedCommandChain> parse(CommandLineInvocation userInvocation) {
@@ -58,20 +54,28 @@ public class ServerSideShellSession {
 
   
   /**
-   * The client cannot parse the command line by itself, it needs the server to validate it. Hence, the client will
+   * The client should not parse the command line by itself, it needs the server to validate it. Hence, the client will
    * have to send incomplete command lines to the server on every keystroke for validation. The server will reply
    * with either a syntax highlight, help message, completion information etc.
    * @return 
    */
-  public void handleCommandLineInvocation(CommandLineInvocation userAction) {
-    List<UnResolvedCommandChain> parsedScript = commandLineParser.parseUserEditedCommand(userAction);
+  public void handleCommandLineInvocation(PbTopLevel topLevelMsgRcv) {
+    CommandLineInvocation userAction=CommandLineInvocation.newFromProtoBuf(topLevelMsgRcv.getUserAction());
     if(userAction.whatWasinvoked==UserRequestedActionKind.EXECUTE){
+      List<UnResolvedCommandChain> parsedScript = commandLineParser.parseUserEditedCommand(userAction);
       List<ResolvedCommandChain> resolvedCmdChains = envVariableResolver.resolve(parsedScript);
-      for(ResolvedCommandChain cmdChain:resolvedCmdChains){
-        execute(cmdChain);
+      if(resolvedCmdChains.size()!=1){
+        log.error("We do not support multiple tasks yet"); //TODO
       }
+
+      ResolvedCommandChain cmdChain=resolvedCmdChains.get(0);
+      cmdChain.setTaskId(getSessionModel().getNextTaskId());
+      TaskCreatedStatus taskCreated=new TaskCreatedStatus(cmdChain.getTaskId(), topLevelMsgRcv.getRequestId(), cmdChain.getUserEditedCommand());
+      serverSideSessionModel.onUpstreamTaskCreated(taskCreated);
+      executeTaskSync(cmdChain);
     }
     else if(userAction.whatWasinvoked==UserRequestedActionKind.AUTO_COMPLETE){
+      log.error(userAction.whatWasinvoked+" not implemented.");
     }
     else{
       log.error(userAction.whatWasinvoked+" not implemented.");

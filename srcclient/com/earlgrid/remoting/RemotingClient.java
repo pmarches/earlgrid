@@ -8,20 +8,21 @@ import java.util.concurrent.ExecutionException;
 import com.earlgrid.core.serverside.EarlGridPb.PbCommandLineUserAction;
 import com.earlgrid.core.serverside.EarlGridPb.PbExecutableCode;
 import com.earlgrid.core.serverside.EarlGridPb.PbFileSystemManagement;
+import com.earlgrid.core.serverside.EarlGridPb.PbFileSystemManagement.PbOperation;
 import com.earlgrid.core.serverside.EarlGridPb.PbPathSpecification;
 import com.earlgrid.core.serverside.EarlGridPb.PbRemoting;
 import com.earlgrid.core.serverside.EarlGridPb.PbSessionModelChange;
+import com.earlgrid.core.serverside.EarlGridPb.PbSessionModelChange.PbTaskState;
 import com.earlgrid.core.serverside.EarlGridPb.PbTabularColumnHeaders;
 import com.earlgrid.core.serverside.EarlGridPb.PbTabularRow;
 import com.earlgrid.core.serverside.EarlGridPb.PbTopLevel;
-import com.earlgrid.core.serverside.EarlGridPb.PbFileSystemManagement.PbOperation;
-import com.earlgrid.core.serverside.EarlGridPb.PbSessionModelChange.PbTaskState;
+import com.earlgrid.core.session.ExecutionHistoryRecord;
 import com.earlgrid.core.sessionmodel.ChangeCurrentWorkingDirectorySessionModelEvent;
 import com.earlgrid.core.sessionmodel.RemoveTaskFromHistorySessionModelEvent;
 import com.earlgrid.core.sessionmodel.SessionModel;
 import com.earlgrid.core.sessionmodel.TabularOutputColumnHeader;
 import com.earlgrid.core.sessionmodel.TabularOutputRow;
-import com.earlgrid.core.sessionmodel.TaskBeginStatus;
+import com.earlgrid.core.sessionmodel.TaskCreatedStatus;
 import com.earlgrid.core.sessionmodel.TaskExitStatus;
 import com.earlgrid.remoting.serverside.FileSelectionPredicate;
 import com.earlgrid.remoting.serverside.IOConnection;
@@ -65,11 +66,20 @@ public abstract class RemotingClient implements IOConnectionMessageHandler {
     log.error("onIOExceptionOccured", e);
   }
 
-  public void executeCommand(String commandStringToExecute) throws Exception {
+  public ExecutionHistoryRecord requestCommandExecution(String commandStringToExecute) throws Exception {
     PbCommandLineUserAction.Builder request=PbCommandLineUserAction.newBuilder();
     request.setCommandLine(commandStringToExecute);
     PbTopLevel.Builder executeRequest=PbTopLevel.newBuilder().setUserAction(request);
-    sendRequestMessage(executeRequest);
+    TopLevelResponseFuture taskCreatedFuture=ioConnection.queueRequest(executeRequest);
+    /** FIXME
+     * We have a race condition here, the client can trigger a command on the server-side, and the server may 
+     * return a finished command very quickly before the client has a change to add a future to some sort of 
+     * pending command. Once way to fix this is by introducing a clientSideCookie in when sending the command to
+     * the server. Another way is to use the requestId as the key upon which we will wait for the server-side command 
+     * to finish.
+     */
+    int newlyCreatedTaskId=taskCreatedFuture.get().getSessionModelChange().getTaskId();
+    return clientSideSessionModel.getHistory().get(newlyCreatedTaskId);
   }
 
   protected TopLevelResponseFuture sendRequestMessage(PbTopLevel.Builder requestMessage) throws IOException{
@@ -102,7 +112,7 @@ public abstract class RemotingClient implements IOConnectionMessageHandler {
     return remotingMsg.hasPong()&& remotingMsg.getPong();
   }
 
-  public void shutdown() throws IOException {
+  public void close() throws IOException {
     shutdownRemoteEnd();
     shutdownLocalEnd();
   }
@@ -184,7 +194,8 @@ public abstract class RemotingClient implements IOConnectionMessageHandler {
       if(modelChange.hasTaskState()){
         PbTaskState taskStateChange = modelChange.getTaskState();
         if(taskStateChange.equals(PbTaskState.RUNNING)){
-          clientSideSessionModel.onUpstreamTaskBegin(new TaskBeginStatus(taskId, modelChange.getCommandString()));
+          int requestIdThatCreatedTask=topLevelMsg.getRequestId();
+          clientSideSessionModel.onUpstreamTaskCreated(new TaskCreatedStatus(taskId, requestIdThatCreatedTask, modelChange.getCommandString()));
         }
         else if(taskStateChange.equals(PbTaskState.FINISHED)){
           clientSideSessionModel.onUpstreamTaskFinished(new TaskExitStatus(taskId));
