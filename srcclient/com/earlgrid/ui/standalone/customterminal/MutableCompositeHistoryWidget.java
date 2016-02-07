@@ -10,6 +10,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Slider;
@@ -27,7 +28,7 @@ import com.earlgrid.ui.standalone.ApplicationMainWindow;
 public class MutableCompositeHistoryWidget extends Composite implements SessionModelChangeObserver {
   private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(MutableCompositeHistoryWidget.class);
   Slider slider;
-  Composite content;
+  Composite taskContent;
   ApplicationMain app;
   LineBasedPanel lineBasedPanel=new LineBasedPanel(); //FIXME Move this to the sessionModel?
   LineBasedViewport lineBasedViewPort=new LineBasedViewport(lineBasedPanel, 0);
@@ -38,18 +39,26 @@ public class MutableCompositeHistoryWidget extends Composite implements SessionM
     ApplicationMainWindow.configureTightGridLayout(this, 2, false);
     ApplicationMainWindow.configureLookOfControlFromParent(this);
 
-    content=new Composite(this, SWT.NONE);
-    ApplicationMainWindow.configureLookOfControlFromParent(content);
-    ApplicationMainWindow.configureTightGridLayout(content, 1, false);
-    content.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-    content.addFocusListener(onFocusListener);
-    
+    taskContent=new Composite(this, SWT.NONE);
+    ApplicationMainWindow.configureTightGridLayout(taskContent, 1, false);
+//    ((GridLayout) taskContent.getLayout()).verticalSpacing=20;
+//    GridLayout layoutBetweenTasks=new GridLayout(1, false);
+//    layoutBetweenTasks.marginHeight=20;
+//    layoutBetweenTasks.marginWidth=0;
+//    layoutBetweenTasks.marginRight=0;
+//    layoutBetweenTasks.horizontalSpacing=0;
+//    layoutBetweenTasks.verticalSpacing=10;
+//    taskContent.setLayout(layoutBetweenTasks);
+    ApplicationMainWindow.configureLookOfControlFromParent(taskContent);
+    taskContent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+    taskContent.addFocusListener(onFocusListener);
+
     slider=new Slider(this, SWT.VERTICAL);
     slider.setValues(0, 0, 0, 10, 1, 10);
     slider.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false, true));
     slider.addSelectionListener(onSliderChanged);
 
-    content.addControlListener(onResizeOrMoved);
+    taskContent.addControlListener(onResizeOrMoved);
     app.getSessionModel().addDelayedObserver(this);
   }
 
@@ -65,8 +74,8 @@ public class MutableCompositeHistoryWidget extends Composite implements SessionM
         }
         lineBasedViewPort.scrollTopOfViewPortToPanelLine(slider.getSelection());
 
-        content.setRedraw(false);
-        for(Control c : content.getChildren()){
+        taskContent.setRedraw(false);
+        for(Control c : taskContent.getChildren()){
           app.getSessionModel().removeDelayedObserver((SessionModelChangeObserver) c);
           c.dispose();
         }
@@ -78,7 +87,7 @@ public class MutableCompositeHistoryWidget extends Composite implements SessionM
           int y=firstArea.topOffsetOfArea*TaskWidget.NB_PIXELS_PER_ROW;
           log.debug("lineBasedViewPort="+lineBasedViewPort.toString());
           for(PositionedLineBasedArea area : visibleAreas){
-            TaskWidget taskWidget=new TaskWidget(content, SWT.NONE, area.area.getRecord());
+            TaskWidget taskWidget=new TaskWidget(taskContent, SWT.NONE, area.area.getRecord());
             taskWidget.setAllowFocus(false);
             ApplicationMainWindow.configureLookOfControlFromParent(taskWidget);
             int widgetHeight=area.area.getNumberOfLines()*TaskWidget.NB_PIXELS_PER_ROW;
@@ -90,7 +99,7 @@ public class MutableCompositeHistoryWidget extends Composite implements SessionM
           }
         }
         
-        content.setRedraw(true);
+        taskContent.setRedraw(true);
       }
     });
   }
@@ -121,7 +130,7 @@ public class MutableCompositeHistoryWidget extends Composite implements SessionM
   };
 
   public void setFocusOnTask(int taskIdToFocus) {
-    for(Control c : content.getChildren()){
+    for(Control c : taskContent.getChildren()){
       TaskWidget taskWidget = (TaskWidget) c;
       if(taskWidget.getTaskId()==taskIdToFocus){
         taskWidget.setAllowFocus(true);

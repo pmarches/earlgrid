@@ -20,7 +20,7 @@ public class ClipboardCmdSpecification extends CollectingCmdSpecification<Clipbo
       clipboardRequest.setOperation(ClipboardOperation.READ_CLIPBOARD);
       PbClientClipboard clipboardResponse=session.requestClientClipboard(clipboardRequest);
       if(clipboardResponse.hasClipboardContent()){
-        emit(new TabularOutputColumnHeader(taskId, new TabularOutputColumn("Clipboard content", ColumnType.STRING)));
+        emit(new TabularOutputColumnHeader(taskId, new TabularOutputColumn("Clipboard taskContent", ColumnType.STRING)));
         String userEnteredValue=clipboardResponse.getClipboardContent();
         for(String line:userEnteredValue.split("\n|\r")){
           emit(new TabularOutputRow(taskId, line));

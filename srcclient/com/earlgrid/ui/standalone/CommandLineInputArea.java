@@ -37,7 +37,7 @@ public class CommandLineInputArea extends Composite {
     createNorthContributionArea();
     createWestContributionArea();
     
-    commandLineTxt = new StyledText(this, SWT.NONE);
+    commandLineTxt = new StyledText(this, SWT.SINGLE);
     commandLineTxt.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
     commandLineTxt.addKeyListener(new CommandLineInputAreaKeyHandler(terminalWindow.appKeyListener, this));
     commandLineTxt.addTraverseListener(preventTraversal);
@@ -107,9 +107,6 @@ public class CommandLineInputArea extends Composite {
 
   public String getAndClearText() {
     String commandStringFromInputArea=commandLineTxt.getText();
-    if('\n'==commandStringFromInputArea.charAt(commandStringFromInputArea.length()-1)){
-      commandStringFromInputArea=commandStringFromInputArea.substring(0, commandStringFromInputArea.length()-1);
-    }
     commandLineTxt.setText("");
     return commandStringFromInputArea;
   }

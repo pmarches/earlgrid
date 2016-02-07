@@ -42,7 +42,9 @@ public class ApplicationMainWindow extends Composite {
     getShell().addListener(SWT.Close, new Listener() { 
       @Override 
       public void handleEvent(Event event) {
-        getDisplay().dispose();
+        if(isDisposed()==false){
+          getDisplay().dispose();
+        }
       } 
     });
   }
@@ -53,7 +55,7 @@ public class ApplicationMainWindow extends Composite {
     historyArea=new MutableCompositeHistoryWidget(this, SWT.NONE, app);
     historyArea.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
     historyArea.addKeyListener(appKeyListener);
-    
+
     inputArea=new CommandLineInputArea(this, app);
     inputArea.setLayoutData(new GridData(SWT.FILL, SWT.DEFAULT, true, false));
   }

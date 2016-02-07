@@ -37,6 +37,7 @@ import com.earlgrid.core.sessionmodel.TaskCreatedStatus;
 import com.earlgrid.core.sessionmodel.TaskExitStatus;
 import com.earlgrid.ui.standalone.ApplicationMainWindow;
 import com.earlgrid.ui.standalone.ResourceCache;
+import com.patrikdufresne.fontawesome.FontAwesome;
 
 public class TaskWidget extends Composite implements SessionModelChangeObserver {
   private ExecutionHistoryRecord execRecord;
@@ -53,6 +54,7 @@ public class TaskWidget extends Composite implements SessionModelChangeObserver 
     GridLayout tightLayout=new GridLayout(4, false);
     tightLayout.marginHeight=0;
     tightLayout.marginWidth=0;
+    tightLayout.marginRight=10; //FIXME This margin might be OS dependant. We need it on linux to avoid having the taskState icon be partially hidden by the scrollbar
     tightLayout.horizontalSpacing=5;
     tightLayout.verticalSpacing=0;
     setLayout(tightLayout);
@@ -63,22 +65,27 @@ public class TaskWidget extends Composite implements SessionModelChangeObserver 
     promptLabel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false));
     promptLabel.setText(">");
     ApplicationMainWindow.configureLookOfControlFromParent(promptLabel);
-    
+
+    //Using a regular text field will create a border that cannot be hidden
     StyledText taskCommandLine=new StyledText(this, SWT.READ_ONLY);
-//    Label taskCommandLine=new Label(this, SWT.NONE);
     taskCommandLine.setEditable(false);
     taskCommandLine.setText(record.userEditedCommand);
     ApplicationMainWindow.configureLookOfControlFromParent(taskCommandLine);
     taskCommandLine.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
     taskCommandLine.addFocusListener(forceFocusToParent);
     taskCommandLine.setForeground(getDisplay().getSystemColor(SWT.COLOR_GREEN));
-
+    
+    final int FONTAWESOME_FONT_SIZE=12;
     Label collapseIcon=new Label(this, SWT.NONE);
-    collapseIcon.setImage(ResourceCache.getInstance().COLLAPSE_ICON);
-    collapseIcon.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false));
+    collapseIcon.setFont(FontAwesome.getFont(FONTAWESOME_FONT_SIZE));
+    collapseIcon.setText(FontAwesome.minus_square_o);
+    collapseIcon.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 
     taskStateIcon=new Label(this, SWT.NONE);
-    taskStateIcon.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false));
+    taskStateIcon.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+    taskStateIcon.setFont(FontAwesome.getFont(FONTAWESOME_FONT_SIZE));
+    taskStateIcon.setText(FontAwesome.close);
+//    taskStateIcon.setBackground(getDisplay().getSystemColor(SWT.COLOR_RED));
     updateStateIcon();
 
     createOutputGrid();
@@ -96,10 +103,12 @@ public class TaskWidget extends Composite implements SessionModelChangeObserver 
         }
         
         if(execRecord.getState()==TaskExecutionState.RUNNING){
-          taskStateIcon.setImage(ResourceCache.getInstance().CLOSE_ICON_RED);
+          taskStateIcon.setText(FontAwesome.stop);
+//          taskStateIcon.setImage(ResourceCache.getInstance().CLOSE_ICON_RED);
         }
         else{
-          taskStateIcon.setImage(ResourceCache.getInstance().CLOSE_ICON);
+          taskStateIcon.setText(FontAwesome.close);
+//          taskStateIcon.setImage(ResourceCache.getInstance().CLOSE_ICON);
         }
       }
     });
@@ -168,9 +177,10 @@ public class TaskWidget extends Composite implements SessionModelChangeObserver 
     cellStyle.setAttributeValue(CellStyleAttributes.FONT, ResourceCache.getInstance().monospaceFont);
     cellStyle.setAttributeValue(CellStyleAttributes.HORIZONTAL_ALIGNMENT, HorizontalAlignmentEnum.LEFT);
     cellStyle.setAttributeValue(CellStyleAttributes.VERTICAL_ALIGNMENT, VerticalAlignmentEnum.TOP);
-//    cellStyle.setAttributeValue(CellStyleAttributes.BORDER_STYLE,this.borderStyle);
     natTable.getConfigRegistry().registerConfigAttribute(CellConfigAttributes.CELL_STYLE, cellStyle);
-    
+
+//  cellStyle.setAttributeValue(CellStyleAttributes.BORDER_STYLE,this.borderStyle);
+    natTable.setBackground(getBackground()); //This ensures the empty pixels between tasks are not visible. FIXME Maybe this should be fixed instead?
     natTable.configure();
   }
 
