@@ -23,6 +23,7 @@ public class CWDDecorator extends CommandLineInputAreaDecorator implements Sessi
     this.commandLineInputArea = commandLineInputArea;
     currentWorkindDirectoryLabel=new Label(contributionArea, SWT.NONE);
     TerminalActionWindow.configureLookOfControlFromParent(currentWorkindDirectoryLabel);
+    currentWorkindDirectoryLabel.setForeground(contributionArea.getDisplay().getSystemColor(SWT.COLOR_DARK_CYAN));
     currentWorkindDirectoryLabel.addPaintListener(x -> scheduleUpdateOfCWDLabel() );
     scheduleUpdateOfCWDLabel();
   }
