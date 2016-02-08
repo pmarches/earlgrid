@@ -34,10 +34,7 @@ public class ApplicationMainWindow extends Composite {
     getShell().setMaximized(true);
     getShell().addKeyListener(appKeyListener);
     getShell().setLayout(new FillLayout(SWT.VERTICAL));
-    getShell().setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
-    getShell().setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_GRAY));
-    getShell().setFont(ResourceCache.getInstance().monospaceFont);
-    getShell().setImage(ResourceCache.getInstance().appIcon);
+    configureLookOfShellWindow(getShell());
 
     getShell().addListener(SWT.Close, new Listener() { 
       @Override 
@@ -47,6 +44,13 @@ public class ApplicationMainWindow extends Composite {
         }
       } 
     });
+  }
+
+  public static void configureLookOfShellWindow(Shell shell) {
+    shell.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
+    shell.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_GRAY));
+    shell.setFont(ResourceCache.getInstance().monospaceFont);
+    shell.setImage(ResourceCache.getInstance().appIcon);
   }
 
   private void createContent() {

@@ -11,7 +11,6 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
@@ -29,10 +28,7 @@ public class CommandHistoryWindow extends Composite {
     super(new Shell(app.display, SWT.CLOSE|SWT.APPLICATION_MODAL), SWT.NONE);
     this.app=app;
     getShell().setLayout(new FillLayout(SWT.VERTICAL));
-    getShell().setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
-    getShell().setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_GRAY));
-    getShell().setFont(ResourceCache.getInstance().monospaceFont);
-    getShell().setImage(ResourceCache.getInstance().appIcon);
+    ApplicationMainWindow.configureLookOfShellWindow(getShell());
 
     ApplicationMainWindow.configureLookOfControlFromParent(this);
     setLayout(new GridLayout(2, false));
@@ -57,7 +53,7 @@ public class CommandHistoryWindow extends Composite {
     historyTable.addKeyListener(historyTableKeyListener);
     historyTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
     historyTable.setHeaderVisible(true);
-    historyTable.addListener(SWT.EraseItem, onEraseHistoryTable);
+//    historyTable.addListener(SWT.EraseItem, onEraseHistoryTable);
     
     TableColumn taskIdCol = new TableColumn(historyTable, SWT.NONE);
     taskIdCol.setText("Id");
