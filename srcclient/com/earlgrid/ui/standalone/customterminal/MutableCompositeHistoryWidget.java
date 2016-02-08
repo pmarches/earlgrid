@@ -10,7 +10,6 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Slider;
@@ -40,7 +39,7 @@ public class MutableCompositeHistoryWidget extends Composite implements SessionM
     ApplicationMainWindow.configureLookOfControlFromParent(this);
 
     taskContent=new Composite(this, SWT.NONE);
-    ApplicationMainWindow.configureTightGridLayout(taskContent, 1, false);
+//    ApplicationMainWindow.configureTightGridLayout(taskContent, 1, false);
 //    ((GridLayout) taskContent.getLayout()).verticalSpacing=20;
 //    GridLayout layoutBetweenTasks=new GridLayout(1, false);
 //    layoutBetweenTasks.marginHeight=20;

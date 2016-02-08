@@ -85,7 +85,7 @@ public class LineBasedViewport {
       final int bottomOffsetOfArea=topOffsetAreaAccumulator+area.getNumberOfLines();
       if(bottomOffsetOfArea>currentTopOffsetOfViewport){ //The bottom area is below the top of the viewport, thus visible
         PositionedLineBasedArea positionedArea=new PositionedLineBasedArea(area);
-        positionedArea.topOffsetOfArea=topOffsetAreaAccumulator-currentTopOffsetOfViewport;
+        positionedArea.topOffsetOfArea=topOffsetAreaAccumulator-currentTopOffsetOfViewport+1;
         visibleAreas.add(positionedArea);
       }
       topOffsetAreaAccumulator+=area.getNumberOfLines();
