@@ -33,18 +33,18 @@ import com.google.protobuf.ByteString;
 /**
  * This class is the high level communication API with the remote end.
  */
-public abstract class RemotingClient implements IOConnectionMessageHandler {
+public class RemotingClient implements IOConnectionMessageHandler {
   private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(RemotingClient.class);
   protected IOConnection ioConnection;
   protected SessionModel clientSideSessionModel;
   private InteractiveFormHandler interactiveFormHandler;
 
-  protected RemotingClient(InteractiveFormHandler interactiveFormHandler){
+  public RemotingClient(InteractiveFormHandler interactiveFormHandler){
     this.interactiveFormHandler=interactiveFormHandler;
+    clientSideSessionModel=new SessionModel(null);
   }
   
   public void connectWith(IOEndPoint ioEndPoint) {
-    clientSideSessionModel=new SessionModel(null);
     ioConnection=new IOConnection(ioEndPoint, "ClientIOAccumulator", this);
   }
   
@@ -224,5 +224,7 @@ public abstract class RemotingClient implements IOConnectionMessageHandler {
     return clientSideSessionModel;
   }
 
-  public abstract String getName();
+  public String getName(){
+    return "NOOP";
+  }
 }

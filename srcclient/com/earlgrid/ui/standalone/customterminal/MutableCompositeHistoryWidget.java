@@ -22,33 +22,23 @@ import com.earlgrid.core.sessionmodel.TabularOutputRow;
 import com.earlgrid.core.sessionmodel.TaskCreatedStatus;
 import com.earlgrid.core.sessionmodel.TaskExitStatus;
 import com.earlgrid.ui.standalone.ApplicationMain;
-import com.earlgrid.ui.standalone.ApplicationMainWindow;
+import com.earlgrid.ui.standalone.TerminalActionWindow;
 
 public class MutableCompositeHistoryWidget extends Composite implements SessionModelChangeObserver {
   private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(MutableCompositeHistoryWidget.class);
   Slider slider;
   Composite taskContent;
-  ApplicationMain app;
   LineBasedPanel lineBasedPanel=new LineBasedPanel(); //FIXME Move this to the sessionModel?
   LineBasedViewport lineBasedViewPort=new LineBasedViewport(lineBasedPanel, 0);
 
-  public MutableCompositeHistoryWidget(Composite parent, int style, ApplicationMain app) {
+  public MutableCompositeHistoryWidget(Composite parent, int style) {
     super(parent, style);
-    this.app=app;
-    ApplicationMainWindow.configureTightGridLayout(this, 2, false);
-    ApplicationMainWindow.configureLookOfControlFromParent(this);
+    TerminalActionWindow.configureLookOfControlFromParent(this);
+    TerminalActionWindow.configureTightGridLayout(this, 2, false);
+    TerminalActionWindow.configureLookOfControlFromParent(this);
 
     taskContent=new Composite(this, SWT.NONE);
-//    ApplicationMainWindow.configureTightGridLayout(taskContent, 1, false);
-//    ((GridLayout) taskContent.getLayout()).verticalSpacing=20;
-//    GridLayout layoutBetweenTasks=new GridLayout(1, false);
-//    layoutBetweenTasks.marginHeight=20;
-//    layoutBetweenTasks.marginWidth=0;
-//    layoutBetweenTasks.marginRight=0;
-//    layoutBetweenTasks.horizontalSpacing=0;
-//    layoutBetweenTasks.verticalSpacing=10;
-//    taskContent.setLayout(layoutBetweenTasks);
-    ApplicationMainWindow.configureLookOfControlFromParent(taskContent);
+    TerminalActionWindow.configureLookOfControlFromParent(taskContent);
     taskContent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
     taskContent.addFocusListener(onFocusListener);
 
@@ -58,7 +48,7 @@ public class MutableCompositeHistoryWidget extends Composite implements SessionM
     slider.addSelectionListener(onSliderChanged);
 
     taskContent.addControlListener(onResizeOrMoved);
-    app.getSessionModel().addDelayedObserver(this);
+    ApplicationMain.getInstance().getSessionModel().addDelayedObserver(this);
   }
 
   public void refreshAllTaskWidgets(){
@@ -75,7 +65,7 @@ public class MutableCompositeHistoryWidget extends Composite implements SessionM
 
         taskContent.setRedraw(false);
         for(Control c : taskContent.getChildren()){
-          app.getSessionModel().removeDelayedObserver((SessionModelChangeObserver) c);
+          ApplicationMain.getInstance().getSessionModel().removeDelayedObserver((SessionModelChangeObserver) c);
           c.dispose();
         }
 
@@ -88,13 +78,13 @@ public class MutableCompositeHistoryWidget extends Composite implements SessionM
           for(PositionedLineBasedArea area : visibleAreas){
             TaskWidget taskWidget=new TaskWidget(taskContent, SWT.NONE, area.area.getRecord());
             taskWidget.setAllowFocus(false);
-            ApplicationMainWindow.configureLookOfControlFromParent(taskWidget);
+            TerminalActionWindow.configureLookOfControlFromParent(taskWidget);
             int widgetHeight=area.area.getNumberOfLines()*TaskWidget.NB_PIXELS_PER_ROW;
             taskWidget.setBounds(0, y, getClientArea().width, widgetHeight);
             y+=widgetHeight;
             log.debug("taskWidget bounds:"+taskWidget.getBounds());
             
-            app.getSessionModel().addDelayedObserver(taskWidget);
+            ApplicationMain.getInstance().getSessionModel().addDelayedObserver(taskWidget);
           }
         }
         
@@ -124,7 +114,7 @@ public class MutableCompositeHistoryWidget extends Composite implements SessionM
   
   private FocusListener onFocusListener=new FocusAdapter() {
     public void focusGained(org.eclipse.swt.events.FocusEvent e) {
-      app.mainWindow.inputArea.setFocus();
+      ApplicationMain.getInstance().mainWindow.terminalWindow.inputArea.setFocus();
     };
   };
 
@@ -143,7 +133,7 @@ public class MutableCompositeHistoryWidget extends Composite implements SessionM
   @Override
   public void onUpstreamTaskCreated(TaskCreatedStatus taskCreated) {
     updateSliderMaximum();
-    lineBasedPanel.occupyArea(new LineBasedArea(app.getSessionModel().getHistory().get(taskCreated.getTaskId())));
+    lineBasedPanel.occupyArea(new LineBasedArea(ApplicationMain.getInstance().getSessionModel().getHistory().get(taskCreated.getTaskId())));
     refreshAllTaskWidgets();
   }
 

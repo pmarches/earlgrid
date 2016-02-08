@@ -17,6 +17,6 @@ public class LoopbackRemotingClient extends RemotingClient {
 
   @Override
   public String getName() {
-    return "local";
+    return "loopback";
   }
 }

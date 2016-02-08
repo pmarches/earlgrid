@@ -5,7 +5,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 
-import com.earlgrid.ui.standalone.ApplicationMainWindow;
+import com.earlgrid.ui.standalone.TerminalActionWindow;
 import com.earlgrid.ui.standalone.CommandLineInputArea;
 
 public class MemoryUsageDecorator extends CommandLineInputAreaDecorator{
@@ -15,7 +15,7 @@ public class MemoryUsageDecorator extends CommandLineInputAreaDecorator{
     this.commandLineInputArea = commandLineInputArea;
     memoryUsageLabel=new Label(contributionArea, SWT.NONE);
 //    promptLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, true, true));
-    ApplicationMainWindow.configureLookOfControlFromParent(memoryUsageLabel);
+    TerminalActionWindow.configureLookOfControlFromParent(memoryUsageLabel);
     handleEvent(null);
   }
   Label memoryUsageLabel;

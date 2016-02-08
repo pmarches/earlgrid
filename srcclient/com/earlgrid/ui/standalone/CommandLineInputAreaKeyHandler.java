@@ -35,16 +35,16 @@ public class CommandLineInputAreaKeyHandler extends HiearchicalKeyListener {
       commandLineInputArea.emptyCommandArea();
     }
     else if(isShowTaskOutputWindow(keyEvent)){
-      app.showTaskOutputWindow();
+      app.mainWindow.showTaskOutputWindow();
     }
     else if(isShowInteractiveInputWindow(keyEvent)){
-      app.showInteractiveInputWindow();
+      app.mainWindow.showInteractiveInputWindow();
     }
     else if(isShowCommandhistoryWindow(keyEvent)){
-      app.showCommandLineHistoryWindow();
+      app.mainWindow.showCommandLineHistoryWindow();
     }
     else if(isSelectTaskOutput(keyEvent)){
-      app.setFocusToTaskOutput(2);
+      app.mainWindow.setFocusToTaskOutput(2);
     }
     else {
       parentKeyListener.keyPressed(keyEvent);

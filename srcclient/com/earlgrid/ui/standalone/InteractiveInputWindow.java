@@ -1,7 +1,5 @@
 package com.earlgrid.ui.standalone;
 
-import java.util.Arrays;
-
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
 import org.eclipse.nebula.widgets.nattable.grid.GridRegion;
@@ -20,28 +18,17 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
+
+import java.util.Arrays;
 
 public class InteractiveInputWindow extends Composite {
-  ApplicationMain app;
   private NatTable natTable;
   
-  public InteractiveInputWindow(ApplicationMain app) {
-    super(new Shell(app.display, SWT.CLOSE|SWT.APPLICATION_MODAL), SWT.NONE);
-    this.app=app;
-    getShell().setLayout(new FillLayout(SWT.VERTICAL));
-    getShell().setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
-    getShell().setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_GRAY));
-    getShell().setFont(ResourceCache.getInstance().monospaceFont);
-    getShell().setImage(ResourceCache.getInstance().appIcon);
-
-    getShell().setText(String.format("Interactive input"));
-
-    ApplicationMainWindow.configureLookOfControlFromParent(this);
+  public InteractiveInputWindow(Composite parent) {
+    super(parent, SWT.NONE);
+    TerminalActionWindow.configureLookOfControlFromParent(this);
 //    setLayout(new GridLayout(1, false));
     setLayout(new FillLayout(SWT.VERTICAL));
 
@@ -68,18 +55,7 @@ public class InteractiveInputWindow extends Composite {
     GridLayer gridLayer = new GridLayer(selectionLayer, columnHeaderLayer, rowHeaderLayer, cornerLayer);
 
     natTable = new NatTable(this, gridLayer, false);
-
-    Rectangle parentBounds = app.mainWindow.getShell().getClientArea();
-    Rectangle ourBounds=getShell().getBounds();
-    getShell().setLocation(parentBounds.x, parentBounds.y+50);
-    getShell().setSize(parentBounds.width, parentBounds.height-100);
   }
-
-  public void open() {
-    getShell().layout();
-    getShell().open();
-  }
-
 
   private KeyListener keyHandler=new KeyAdapter() {
     @Override
@@ -89,4 +65,10 @@ public class InteractiveInputWindow extends Composite {
       }
     }
   };
+  
+  @Override
+  public void setVisible(boolean visible) {
+    layout();
+    super.setVisible(visible);
+  }
 }

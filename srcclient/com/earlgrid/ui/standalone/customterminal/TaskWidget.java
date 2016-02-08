@@ -35,7 +35,7 @@ import com.earlgrid.core.sessionmodel.TabularOutputColumnHeader;
 import com.earlgrid.core.sessionmodel.TabularOutputRow;
 import com.earlgrid.core.sessionmodel.TaskCreatedStatus;
 import com.earlgrid.core.sessionmodel.TaskExitStatus;
-import com.earlgrid.ui.standalone.ApplicationMainWindow;
+import com.earlgrid.ui.standalone.TerminalActionWindow;
 import com.earlgrid.ui.standalone.ResourceCache;
 import com.patrikdufresne.fontawesome.FontAwesome;
 
@@ -59,18 +59,18 @@ public class TaskWidget extends Composite implements SessionModelChangeObserver 
     tightLayout.verticalSpacing=0;
     setLayout(tightLayout);
 
-    ApplicationMainWindow.configureLookOfControlFromParent(this);
+    TerminalActionWindow.configureLookOfControlFromParent(this);
 
     Label promptLabel=new Label(this, SWT.NONE);
     promptLabel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false));
     promptLabel.setText(">");
-    ApplicationMainWindow.configureLookOfControlFromParent(promptLabel);
+    TerminalActionWindow.configureLookOfControlFromParent(promptLabel);
 
     //Using a regular text field will create a border that cannot be hidden
     StyledText taskCommandLine=new StyledText(this, SWT.READ_ONLY);
     taskCommandLine.setEditable(false);
     taskCommandLine.setText(record.userEditedCommand);
-    ApplicationMainWindow.configureLookOfControlFromParent(taskCommandLine);
+    TerminalActionWindow.configureLookOfControlFromParent(taskCommandLine);
     taskCommandLine.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
     taskCommandLine.addFocusListener(forceFocusToParent);
     taskCommandLine.setForeground(getDisplay().getSystemColor(SWT.COLOR_GREEN));

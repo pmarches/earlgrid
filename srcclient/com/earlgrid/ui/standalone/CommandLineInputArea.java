@@ -14,8 +14,7 @@ import com.earlgrid.ui.decorators.MemoryUsageDecorator;
 
 public class CommandLineInputArea extends Composite {
   private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(CommandLineInputArea.class);
-  ApplicationMainWindow terminalWindow;
-  public ApplicationMain app;
+  TerminalActionWindow terminalWindow;
 
   StyledText commandLineTxt;
   Composite northContributionArea;
@@ -27,21 +26,20 @@ public class CommandLineInputArea extends Composite {
   public InputAreaMode currentEditionMode=InputAreaMode.SHELL_MODE;
   private InputAreaStateIndicatorDecorator editModeIndicator;
 
-  public CommandLineInputArea(ApplicationMainWindow terminalWindow, ApplicationMain app) {
+  public CommandLineInputArea(TerminalActionWindow terminalWindow) {
     super(terminalWindow, SWT.NONE);
     this.terminalWindow=terminalWindow;
-    this.app=app;
-    ApplicationMainWindow.configureTightGridLayout(this, 3, false);
-    ApplicationMainWindow.configureLookOfControlFromParent(this);
+    TerminalActionWindow.configureTightGridLayout(this, 3, false);
+    TerminalActionWindow.configureLookOfControlFromParent(this);
     
     createNorthContributionArea();
     createWestContributionArea();
     
     commandLineTxt = new StyledText(this, SWT.SINGLE);
     commandLineTxt.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-    commandLineTxt.addKeyListener(new CommandLineInputAreaKeyHandler(terminalWindow.appKeyListener, this));
+//    commandLineTxt.addKeyListener(new CommandLineInputAreaKeyHandler(terminalWindow.appKeyListener, this));
     commandLineTxt.addTraverseListener(preventTraversal);
-    ApplicationMainWindow.configureLookOfControlFromParent(commandLineTxt);
+    TerminalActionWindow.configureLookOfControlFromParent(commandLineTxt);
 
     createEastContributionArea();
     createSouthContributionArea();
@@ -72,7 +70,7 @@ public class CommandLineInputArea extends Composite {
 
   private Composite createContributionArea() {
     Composite contributionArea = new Composite(this, SWT.NONE);
-    ApplicationMainWindow.configureLookOfControlFromParent(contributionArea);
+    TerminalActionWindow.configureLookOfControlFromParent(contributionArea);
     RowLayout layout=new RowLayout(SWT.HORIZONTAL);
     layout.fill=true;
     layout.marginTop=0;
@@ -85,7 +83,7 @@ public class CommandLineInputArea extends Composite {
 
   private void createDecorators() {
     CWDDecorator currentWorkingDirectoryDecorator = new CWDDecorator(this, northContributionArea);
-    app.getSessionModel().addDelayedObserver(currentWorkingDirectoryDecorator);
+    ApplicationMain.getInstance().getSessionModel().addDelayedObserver(currentWorkingDirectoryDecorator);
     
     editModeIndicator=new InputAreaStateIndicatorDecorator(this, westContributionArea);
     new MemoryUsageDecorator(this, southContributionArea);

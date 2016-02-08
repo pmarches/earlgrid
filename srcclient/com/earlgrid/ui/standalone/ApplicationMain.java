@@ -1,5 +1,9 @@
 package com.earlgrid.ui.standalone;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
+
 import java.io.IOException;
 
 import com.earlgrid.core.sessionmodel.SessionModel;
@@ -11,14 +15,11 @@ import com.earlgrid.remoting.SSHRemotingClient;
 import com.earlgrid.remoting.serverside.ServerSideHasShutDownException;
 import com.earlgrid.ui.model.HostManager;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.MessageBox;
-
 public class ApplicationMain {
   static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(ApplicationMain.class);
-  Display display;
-  public ApplicationMainWindow mainWindow;
+  private static ApplicationMain instance;
+  Display display= new Display();
+  public ApplicationMainShell mainWindow;
   public ApplicationKeyListener keyListener;
 
   ApplicationCmdLineOptions args;
@@ -27,6 +28,7 @@ public class ApplicationMain {
   InteractiveFormHandler interactiveFormHandler=new InteractiveFormHandler(this);
 
   public ApplicationMain() {
+    client=new RemotingClient(interactiveFormHandler); //This bogus instance will get replaced once we open the connection
     hostManager = new HostManager();
     keyListener = new ApplicationKeyListener(this);
   }
@@ -59,7 +61,6 @@ public class ApplicationMain {
 
   private void execute(ApplicationCmdLineOptions args) {
     this.args = args;
-    display = new Display();
 
     if (args.sessionName!=null) {
       new SelectHostToConnectWindow(this);
@@ -69,7 +70,6 @@ public class ApplicationMain {
       } catch (IOException e) {
         log.error("Exception caught in "+getClass().getName(), e);
       }
-      mainWindow = new ApplicationMainWindow(this);
       mainWindow.open();
       //////////////////// FIXME TESTING STUFF HERE /////////////////////
       if(true){
@@ -111,12 +111,11 @@ public class ApplicationMain {
 
   public void openRemoteTerminalWindow(RemoteHostConfiguration remoteHostConfiguration) throws Exception {
     client = new SSHRemotingClient(remoteHostConfiguration, interactiveFormHandler);
-    mainWindow = new ApplicationMainWindow(this);
     mainWindow.open();
   }
 
   public static void main(String[] args) {
-    ApplicationMain app = new ApplicationMain();
+    ApplicationMain app = ApplicationMain.getInstance();
     app.execute(ApplicationCmdLineOptions.createFromStrings(args));
   }
 
@@ -124,24 +123,16 @@ public class ApplicationMain {
     return client.getSessionModel();
   }
 
-
-  public void showCommandLineHistoryWindow() {
-    CommandHistoryWindow historyWindow = new CommandHistoryWindow(this);
-    historyWindow.open();
+  public static ApplicationMain getInstance() {
+    if(instance==null){
+      instance=new ApplicationMain();
+      instance.createWindow();
+    }
+    return instance;
   }
 
-  public void showTaskOutputWindow() {
-    TaskOutputWindow taskOutputWindow=new TaskOutputWindow(this);
-    taskOutputWindow.open();
-  }
-
-  public void showInteractiveInputWindow() {
-    InteractiveInputWindow interactiveInputWindow=new InteractiveInputWindow(this);
-    interactiveInputWindow.open();
-  }
-
-  public void setFocusToTaskOutput(int taskIdToFocus) {
-    mainWindow.historyArea.setFocusOnTask(taskIdToFocus);
+  private void createWindow() {
+    mainWindow = new ApplicationMainShell(this, display);
   }
 
 }

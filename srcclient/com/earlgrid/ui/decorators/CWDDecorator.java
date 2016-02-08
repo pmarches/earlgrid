@@ -11,7 +11,8 @@ import com.earlgrid.core.sessionmodel.TabularOutputColumnHeader;
 import com.earlgrid.core.sessionmodel.TabularOutputRow;
 import com.earlgrid.core.sessionmodel.TaskCreatedStatus;
 import com.earlgrid.core.sessionmodel.TaskExitStatus;
-import com.earlgrid.ui.standalone.ApplicationMainWindow;
+import com.earlgrid.ui.standalone.TerminalActionWindow;
+import com.earlgrid.ui.standalone.ApplicationMain;
 import com.earlgrid.ui.standalone.CommandLineInputArea;
 
 public class CWDDecorator extends CommandLineInputAreaDecorator implements SessionModelChangeObserver {
@@ -21,14 +22,14 @@ public class CWDDecorator extends CommandLineInputAreaDecorator implements Sessi
   public CWDDecorator(CommandLineInputArea commandLineInputArea, Composite contributionArea) {
     this.commandLineInputArea = commandLineInputArea;
     currentWorkindDirectoryLabel=new Label(contributionArea, SWT.NONE);
-    ApplicationMainWindow.configureLookOfControlFromParent(currentWorkindDirectoryLabel);
+    TerminalActionWindow.configureLookOfControlFromParent(currentWorkindDirectoryLabel);
     currentWorkindDirectoryLabel.addPaintListener(x -> scheduleUpdateOfCWDLabel() );
     scheduleUpdateOfCWDLabel();
   }
 
   private void scheduleUpdateOfCWDLabel() {
     commandLineInputArea.getDisplay().asyncExec(()-> {
-      String promptText=String.format("%s>", this.commandLineInputArea.app.client.getSessionModel().getCurrentWorkingDirectory().toString());
+      String promptText=String.format("%s>", ApplicationMain.getInstance().client.getSessionModel().getCurrentWorkingDirectory().toString());
       currentWorkindDirectoryLabel.setText(promptText);
       currentWorkindDirectoryLabel.getParent().layout(); //The size of the label changes, maybe we should just make the label bigger?
     } );
