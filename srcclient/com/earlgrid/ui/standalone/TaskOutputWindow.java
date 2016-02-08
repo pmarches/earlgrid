@@ -11,6 +11,8 @@ import com.earlgrid.core.session.ExecutionHistoryRecord;
 import com.earlgrid.ui.standalone.customterminal.TaskWidget;
 
 public class TaskOutputWindow extends Composite {
+  TaskWidget taskWidget;
+
   public TaskOutputWindow(Composite parent) {
     super(parent, SWT.NONE);
     ExecutionHistoryRecord taskModel=ApplicationMain.getInstance().getSessionModel().getHistory().get(1);
@@ -19,9 +21,13 @@ public class TaskOutputWindow extends Composite {
 //    setLayout(new GridLayout(1, false));
     setLayout(new FillLayout(SWT.VERTICAL));
 
-    TaskWidget taskWidget=new TaskWidget(this, SWT.NONE, taskModel);
-    taskWidget.addKeyListener(keyHandler);
-    taskWidget.setFocus();
+    taskWidget=new TaskWidget(this, SWT.NONE, taskModel);
+    addKeyListener(keyHandler);
+  }
+  
+  @Override
+  public boolean setFocus() {
+    return taskWidget.setFocus();
   }
 
   @Override
@@ -34,8 +40,12 @@ public class TaskOutputWindow extends Composite {
     @Override
     public void keyReleased(KeyEvent e) {
       if(e.keyCode==SWT.ESC){
-        getShell().dispose();
+        closeWindow();
       }
     }
   };
+
+  private void closeWindow() {
+    ApplicationMain.getInstance().mainWindow.showTerminalWindow();
+  }
 }

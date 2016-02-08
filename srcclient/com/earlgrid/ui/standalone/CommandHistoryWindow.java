@@ -17,14 +17,17 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
+import com.earlgrid.core.session.ExecutionHistory;
 import com.earlgrid.core.session.ExecutionHistoryRecord;
 
 public class CommandHistoryWindow extends Composite {
   Text searchTextBox;
   Table historyTable;
+  ExecutionHistory history;
   
-  public CommandHistoryWindow(Composite parent) {
+  public CommandHistoryWindow(Composite parent, ExecutionHistory executionHistory) {
     super(parent, SWT.NONE);
+    this.history=executionHistory;
     TerminalActionWindow.configureLookOfControlFromParent(this);
     setLayout(new GridLayout(2, false));
 
@@ -42,7 +45,7 @@ public class CommandHistoryWindow extends Composite {
     historyTable = new Table(this, SWT.BORDER|SWT.FULL_SELECTION|SWT.VIRTUAL);
     TerminalActionWindow.configureLookOfControlFromParent(historyTable);
     historyTable.addListener(SWT.SetData, historyTableDataListener);
-    historyTable.setItemCount(ApplicationMain.getInstance().getSessionModel().getHistory().size());
+    historyTable.setItemCount(history.size());
     historyTable.addKeyListener(historyTableKeyListener);
     historyTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
     historyTable.setHeaderVisible(true);
@@ -65,14 +68,16 @@ public class CommandHistoryWindow extends Composite {
       commandCol.setWidth(widthRemaining);
     });
   }
+  
 
   Listener historyTableDataListener=new Listener() {
+
     @Override
     public void handleEvent(Event event) {
       TableItem item = (TableItem)event.item;
       int index = event.index;
       //FIXME the index is not the taskId! Either we lookup the taskId from the index, 
-      ExecutionHistoryRecord record = ApplicationMain.getInstance().getSessionModel().getHistory().get(index);
+      ExecutionHistoryRecord record = history.get(index);
       item.setText(0, String.format("%d", record.taskId)); 
       item.setText(1, record.userEditedCommand);
       item.setText(2, String.format("%d", record.out.getRowCount()));
@@ -104,12 +109,17 @@ public class CommandHistoryWindow extends Composite {
         TableItem selectedRow = historyTable.getSelection()[0];
         String recalledCommand=selectedRow.getText(1);
         ApplicationMain.getInstance().mainWindow.terminalWindow.inputArea.setText(recalledCommand);
-        getShell().dispose();
+        closeWindow();
       }
       else if(e.keyCode==SWT.ESC){
-        getShell().dispose();
+        closeWindow();
       }
-    };
+    }
+
+  };
+
+  private void closeWindow() {
+    ApplicationMain.getInstance().mainWindow.showTerminalWindow();
   };
 
   private KeyListener searchTextBoxKeyListener=new KeyAdapter() {
@@ -124,7 +134,7 @@ public class CommandHistoryWindow extends Composite {
         historyTable.setSelection(historyTable.getItemCount()-1);
       }
       else if(e.keyCode==SWT.ESC){
-        getShell().dispose();
+        closeWindow();
       }
     }
   };

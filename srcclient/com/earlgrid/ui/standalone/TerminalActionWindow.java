@@ -1,9 +1,6 @@
 package com.earlgrid.ui.standalone;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -22,7 +19,6 @@ public class TerminalActionWindow extends Composite {
     
     configureLookOfControlFromParent(this);
     createContent();
-    addFocusListener(onFocusListener);
   }
 
   private void createContent() {
@@ -44,13 +40,11 @@ public class TerminalActionWindow extends Composite {
     control.setLayout(tightLayout);
   }
 
-  private FocusListener onFocusListener=new FocusAdapter() {
-    @Override
-    public void focusGained(FocusEvent e) {
-      inputArea.setFocus();
-    }
-  };
-
+  @Override
+  public boolean setFocus() {
+    return inputArea.setFocus();
+  }
+  
   public static void configureLookOfControlFromParent(Control control){
     control.setBackground(control.getParent().getBackground());
     control.setForeground(control.getParent().getForeground());

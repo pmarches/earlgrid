@@ -52,11 +52,6 @@ public class ApplicationMainShell {
     terminalWindow=new TerminalActionWindow(this);
     switchToWindow(terminalWindow);
 
-    /* Center shell?
-    Rectangle parentBounds = getShell().getClientArea();
-    Rectangle ourBounds=getShell().getBounds();
-    getShell().setLocation(parentBounds.x+(parentBounds.width-ourBounds.width)/2, parentBounds.y+50);
-     */
     getShell().setText("earlgrid "+ApplicationMain.getInstance().client.getName());
     getShell().open();
   }
@@ -71,6 +66,10 @@ public class ApplicationMainShell {
     terminalWindow.historyArea.setFocusOnTask(taskIdToFocus);
   }
 
+  public void showTerminalWindow() {
+    switchToWindow(terminalWindow);
+  }
+
   public void showTaskOutputWindow() {
     TaskOutputWindow taskOutputWindow = new TaskOutputWindow(shell);
     switchToWindow(taskOutputWindow);
@@ -82,7 +81,7 @@ public class ApplicationMainShell {
   }
 
   public void showCommandLineHistoryWindow() {
-    CommandHistoryWindow historyWindow = new CommandHistoryWindow(getShell());
+    CommandHistoryWindow historyWindow = new CommandHistoryWindow(getShell(), ApplicationMain.getInstance().getSessionModel().getHistory());
     switchToWindow(historyWindow);
   }
 
