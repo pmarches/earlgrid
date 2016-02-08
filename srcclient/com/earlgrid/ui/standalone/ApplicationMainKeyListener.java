@@ -3,9 +3,9 @@ package com.earlgrid.ui.standalone;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 
-public class ApplicationKeyListener extends HiearchicalKeyListener {
+public class ApplicationMainKeyListener extends HiearchicalKeyListener {
 
-  public ApplicationKeyListener(ApplicationMain app) {
+  public ApplicationMainKeyListener(ApplicationMain app) {
     super(null);
     this.app=app;
   }

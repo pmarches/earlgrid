@@ -39,7 +39,7 @@ public class InteractiveFormHandler {
   }
 
   protected void createAndShowFormDialog(PbTopLevel topLevelMsg){
-    Shell formShell=new Shell(app.mainWindow.getDisplay(), SWT.CLOSE|SWT.APPLICATION_MODAL);
+    Shell formShell=new Shell(app.getDisplay(), SWT.CLOSE|SWT.APPLICATION_MODAL);
     PbInteractiveForm interactiveFormRequest=topLevelMsg.getClientSideInteractiveForm();
     formShell.setLayout(new GridLayout(2, true));
 
@@ -104,13 +104,13 @@ public class InteractiveFormHandler {
   }
 
   public void handleClipboard(PbTopLevel topLevelMsg) {
-    app.mainWindow.getDisplay().asyncExec(()-> {
+    app.getDisplay().asyncExec(()-> {
       PbClientClipboard clipboardReq = topLevelMsg.getClientClipboard();
       if(clipboardReq.hasOperation()==false){
         log.error("Missing operation on clipboard command");
         return;
       }
-      Clipboard swtClipboard=new Clipboard(app.mainWindow.getDisplay());
+      Clipboard swtClipboard=new Clipboard(app.getDisplay());
 
       if(clipboardReq.getOperation()==ClipboardOperation.READ_CLIPBOARD){
         String clipboardTextData = (String)swtClipboard.getContents(TextTransfer.getInstance());

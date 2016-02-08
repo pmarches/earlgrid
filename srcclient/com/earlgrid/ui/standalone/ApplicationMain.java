@@ -20,7 +20,6 @@ public class ApplicationMain {
   private static ApplicationMain instance;
   Display display= new Display();
   public ApplicationMainShell mainWindow;
-  public ApplicationKeyListener keyListener;
 
   ApplicationCmdLineOptions args;
   HostManager hostManager;
@@ -30,7 +29,6 @@ public class ApplicationMain {
   public ApplicationMain() {
     client=new RemotingClient(interactiveFormHandler); //This bogus instance will get replaced once we open the connection
     hostManager = new HostManager();
-    keyListener = new ApplicationKeyListener(this);
   }
 
   public void acceptUserCommand(String userEnteredCommandText) {
@@ -135,4 +133,7 @@ public class ApplicationMain {
     mainWindow = new ApplicationMainShell(this, display);
   }
 
+  public Display getDisplay(){
+    return display;
+  }
 }

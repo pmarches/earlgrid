@@ -3,7 +3,7 @@ package com.earlgrid.ui.standalone;
 import org.eclipse.swt.events.KeyEvent;
 
 public class TerminalWindowKeyListener extends HiearchicalKeyListener {
-  public TerminalWindowKeyListener(ApplicationKeyListener parentKeyListener) {
+  public TerminalWindowKeyListener(ApplicationMainKeyListener parentKeyListener) {
     super(parentKeyListener);
   }
   

@@ -47,7 +47,7 @@ public class SelectHostToConnectWindow {
 //    positionShellOnCenterOfDisplay();
     connectToHostShell.setLayout(new GridLayout(1, false));
     connectToHostShell.setText("Connect to host");
-    connectToHostShell.addKeyListener(app.keyListener);
+    connectToHostShell.addKeyListener(ApplicationMain.getInstance().mainWindow.mainAppkeyListener);
     connectToHostShell.addListener(SWT.Close, new Listener() {
       public void handleEvent(Event event) {
         connectToHostShell.dispose();

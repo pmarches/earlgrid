@@ -14,12 +14,15 @@ import com.earlgrid.ui.standalone.customterminal.MutableCompositeHistoryWidget;
 public class TerminalActionWindow extends Composite {
   public CommandLineInputArea inputArea;
   MutableCompositeHistoryWidget historyArea;
+  TerminalWindowKeyListener terminalKeyListener;
 
-  public TerminalActionWindow(Composite parent) {
-    super(parent, SWT.NONE);
+  public TerminalActionWindow(ApplicationMainShell parent) {
+    super(parent.getShell(), SWT.NONE);
+    terminalKeyListener= new TerminalWindowKeyListener(parent.mainAppkeyListener);
     
     configureLookOfControlFromParent(this);
     createContent();
+    addFocusListener(onFocusListener);
   }
 
   private void createContent() {
@@ -30,8 +33,6 @@ public class TerminalActionWindow extends Composite {
 
     inputArea=new CommandLineInputArea(this);
     inputArea.setLayoutData(new GridData(SWT.FILL, SWT.DEFAULT, true, false));
-    
-    addFocusListener(onFocusListener);
   }
 
   public static void configureTightGridLayout(Composite control, int nbColumns, boolean columnsSameSize) {

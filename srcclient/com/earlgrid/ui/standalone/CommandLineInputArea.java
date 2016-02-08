@@ -14,7 +14,6 @@ import com.earlgrid.ui.decorators.MemoryUsageDecorator;
 
 public class CommandLineInputArea extends Composite {
   private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(CommandLineInputArea.class);
-  TerminalActionWindow terminalWindow;
 
   StyledText commandLineTxt;
   Composite northContributionArea;
@@ -28,7 +27,6 @@ public class CommandLineInputArea extends Composite {
 
   public CommandLineInputArea(TerminalActionWindow terminalWindow) {
     super(terminalWindow, SWT.NONE);
-    this.terminalWindow=terminalWindow;
     TerminalActionWindow.configureTightGridLayout(this, 3, false);
     TerminalActionWindow.configureLookOfControlFromParent(this);
     
@@ -37,7 +35,7 @@ public class CommandLineInputArea extends Composite {
     
     commandLineTxt = new StyledText(this, SWT.SINGLE);
     commandLineTxt.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-//    commandLineTxt.addKeyListener(new CommandLineInputAreaKeyHandler(terminalWindow.appKeyListener, this));
+    commandLineTxt.addKeyListener(new CommandLineInputAreaKeyHandler(terminalWindow.terminalKeyListener, this));
     commandLineTxt.addTraverseListener(preventTraversal);
     TerminalActionWindow.configureLookOfControlFromParent(commandLineTxt);
 

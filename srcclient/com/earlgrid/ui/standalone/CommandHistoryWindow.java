@@ -9,12 +9,15 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+
+import com.earlgrid.core.session.ExecutionHistoryRecord;
 
 public class CommandHistoryWindow extends Composite {
   Text searchTextBox;
@@ -36,40 +39,46 @@ public class CommandHistoryWindow extends Composite {
     searchTextBox.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
     searchTextBox.setFocus();
     
-    historyTable = new Table(this, SWT.BORDER | SWT.FULL_SELECTION);
+    historyTable = new Table(this, SWT.BORDER|SWT.FULL_SELECTION|SWT.VIRTUAL);
     TerminalActionWindow.configureLookOfControlFromParent(historyTable);
+    historyTable.addListener(SWT.SetData, historyTableDataListener);
+    historyTable.setItemCount(ApplicationMain.getInstance().getSessionModel().getHistory().size());
     historyTable.addKeyListener(historyTableKeyListener);
     historyTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
     historyTable.setHeaderVisible(true);
 //    historyTable.addListener(SWT.EraseItem, onEraseHistoryTable);
     
-    TableColumn taskIdCol = new TableColumn(historyTable, SWT.NONE);
+    final TableColumn taskIdCol = new TableColumn(historyTable, SWT.NONE);
     taskIdCol.setText("Id");
-    taskIdCol.setWidth(35);
 
-    TableColumn commandCol = new TableColumn(historyTable, SWT.NONE);
+    final TableColumn commandCol = new TableColumn(historyTable, SWT.NONE);
     commandCol.setText("Command");
 
-    TableColumn outputSizeCol = new TableColumn(historyTable, SWT.NONE);
+    final TableColumn outputSizeCol = new TableColumn(historyTable, SWT.NONE);
     outputSizeCol.setText("Out");
-    outputSizeCol.setWidth(45);
-
+    
     historyTable.addListener(SWT.Resize, event -> {
-        historyTable.getColumn(1).setWidth(historyTable.getClientArea().width-taskIdCol.getWidth()-outputSizeCol.getWidth());
+      taskIdCol.setWidth(35);
+      outputSizeCol.setWidth(1); //The last column will never have a fixed with, but setting any value here will ensure the column is visible
+      final int OUTPUT_SIZE_COL=45;
+      int widthRemaining=historyTable.getClientArea().width-taskIdCol.getWidth()-OUTPUT_SIZE_COL;
+      commandCol.setWidth(widthRemaining);
     });
   }
 
-  @Override
-  public void setVisible(boolean visible) {
-    ApplicationMain.getInstance().getSessionModel().getHistory().forEach(record -> {
-      TableItem item = new TableItem(historyTable, SWT.NONE);
+  Listener historyTableDataListener=new Listener() {
+    @Override
+    public void handleEvent(Event event) {
+      TableItem item = (TableItem)event.item;
+      int index = event.index;
+      //FIXME the index is not the taskId! Either we lookup the taskId from the index, 
+      ExecutionHistoryRecord record = ApplicationMain.getInstance().getSessionModel().getHistory().get(index);
       item.setText(0, String.format("%d", record.taskId)); 
       item.setText(1, record.userEditedCommand);
       item.setText(2, String.format("%d", record.out.getRowCount()));
-    });
-    super.setVisible(visible);
-  }
-  
+    }
+  };
+
   private Listener onEraseHistoryTable=event-> {
     event.detail &= ~SWT.HOT;
     if ((event.detail & SWT.SELECTED) == 0){
