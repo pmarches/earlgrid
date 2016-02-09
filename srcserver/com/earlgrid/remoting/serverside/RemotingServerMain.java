@@ -17,6 +17,12 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
+import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
+import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
+
 import com.earlgrid.core.serverside.EarlGridPb.PbExceptionSpecification;
 import com.earlgrid.core.serverside.EarlGridPb.PbExecutableCode;
 import com.earlgrid.core.serverside.EarlGridPb.PbFileSystemManagement;
@@ -40,12 +46,16 @@ import com.earlgrid.core.sessionmodel.TaskCreatedStatus;
 import com.earlgrid.core.sessionmodel.TaskExitStatus;
 
 public class RemotingServerMain implements IOConnectionMessageHandler, SessionModelChangeObserver {
-  private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(RemotingServerMain.class);
   private RemotingClassLoader classLoader;
   private ServerSideShellSession session;
   public IOConnection connectionToClient;
 
+  private static org.apache.logging.log4j.Logger log;
+
   public RemotingServerMain(IOEndPoint controllingEndPoint) {
+    if(log==null){
+      log = org.apache.logging.log4j.LogManager.getLogger(RemotingServerMain.class);
+    }
     connectionToClient=new IOConnection(controllingEndPoint, "ServerSide", this);
     session=new ServerSideShellSession(this);
     classLoader=new RemotingClassLoader(controllingEndPoint);
@@ -229,6 +239,13 @@ public class RemotingServerMain implements IOConnectionMessageHandler, SessionMo
 
   public static void main(String[] args) {
     try {
+      //TODO Redirect the server side logs to the client via protobuf
+      ConfigurationBuilder<BuiltConfiguration> log4JConfBuilder = ConfigurationBuilderFactory.newConfigurationBuilder();
+      log4JConfBuilder.setStatusLevel(Level.OFF);
+      log4JConfBuilder.add(log4JConfBuilder.newRootLogger(Level.OFF));
+      Configurator.initialize(log4JConfBuilder.build());
+      log = org.apache.logging.log4j.LogManager.getLogger(RemotingServerMain.class);
+
       IOEndPoint controllingEndPoint=new IOEndPoint(System.out, System.in, null);
       System.setOut(new PrintStream("/dev/null"));
       System.setIn(new FileInputStream("/dev/null"));
