@@ -7,6 +7,8 @@ import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -41,8 +43,9 @@ public class MutableCompositeHistoryWidget extends Composite implements SessionM
     taskContent=new Composite(this, SWT.NONE);
     TerminalActionWindow.configureLookOfControlFromParent(taskContent);
     taskContent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-    taskContent.addFocusListener(onFocusListener);
-
+    taskContent.addFocusListener(onTaskContentFocusListener);
+    taskContent.addMouseWheelListener((e)-> { slider.setSelection(slider.getSelection()-e.count); refreshAllTaskWidgets();} );
+    
     slider=new Slider(this, SWT.VERTICAL);
     slider.setValues(0, 0, 0, 10, 1, 10);
     slider.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false, true));
@@ -121,12 +124,12 @@ public class MutableCompositeHistoryWidget extends Composite implements SessionM
     }
   };
   
-  private FocusListener onFocusListener=new FocusAdapter() {
+  private FocusListener onTaskContentFocusListener=new FocusAdapter() {
     public void focusGained(org.eclipse.swt.events.FocusEvent e) {
       ApplicationMain.getInstance().mainWindow.terminalWindow.inputArea.setFocus();
     };
   };
-
+  
   public void setFocusOnTask(int taskIdToFocus) {
     for(Control c : taskContent.getChildren()){
       TaskWidget taskWidget = (TaskWidget) c;
