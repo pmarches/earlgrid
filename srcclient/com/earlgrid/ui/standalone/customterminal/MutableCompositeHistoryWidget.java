@@ -5,6 +5,7 @@ import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -46,6 +47,7 @@ public class MutableCompositeHistoryWidget extends Composite implements SessionM
     slider.setValues(0, 0, 0, 10, 1, 10);
     slider.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false, true));
     slider.addSelectionListener(onSliderChanged);
+    slider.addFocusListener(onSliderFocus);
 
     taskContent.addControlListener(onResizeOrMoved);
     ApplicationMain.getInstance().getSessionModel().addDelayedObserver(this);
@@ -105,6 +107,13 @@ public class MutableCompositeHistoryWidget extends Composite implements SessionM
     }
   };
   
+  private FocusListener onSliderFocus=new FocusAdapter() {
+    @Override
+    public void focusGained(FocusEvent e) {
+      taskContent.setFocus();
+    }
+  };
+
   private SelectionListener onSliderChanged=new SelectionAdapter(){
     @Override
     public void widgetSelected(SelectionEvent e) {
