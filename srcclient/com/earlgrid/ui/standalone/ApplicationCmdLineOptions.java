@@ -8,17 +8,14 @@ public class ApplicationCmdLineOptions {
     ApplicationCmdLineOptions options = new ApplicationCmdLineOptions();
     for(int i=0; i<args.length; i++){
       String arg=args[i];
-      if(i==0){ //First arg is always the userHostDir
-        Matcher userHostDirectoryMatch = USER_HOST_DIRECTORY_PATTERN.matcher(arg);
-        if(userHostDirectoryMatch.matches()){
-          if(userHostDirectoryMatch.group(1)!=null){
-            options.username=userHostDirectoryMatch.group(2);
+      if(i==0){ //First arg is always the sessionName
+        Matcher sessionNameMatch = SESSION_NAME_PATTERN.matcher(arg);
+        if(sessionNameMatch.matches()){
+          if(sessionNameMatch.group(1)!=null){
+            options.sessionName=sessionNameMatch.group(1);
           }
-          if(userHostDirectoryMatch.group(3)!=null){
-            options.sessionName=userHostDirectoryMatch.group(3);
-          }
-          if(userHostDirectoryMatch.group(4)!=null){
-            options.initialRemoteDirectory=userHostDirectoryMatch.group(5);
+          if(sessionNameMatch.group(2)!=null){
+            options.initialRemoteDirectory=sessionNameMatch.group(3);
           }
           continue;
         }
@@ -32,11 +29,8 @@ public class ApplicationCmdLineOptions {
     return options;
   }
 
-  @Deprecated
-  public String username=System.getProperty("user.name");
   public String sessionName;
-  @Deprecated
   public String initialRemoteDirectory;
   
-  protected static final Pattern USER_HOST_DIRECTORY_PATTERN=Pattern.compile("(([^@]+)@)?([^:]+)(:(.+))?");
+  protected static final Pattern SESSION_NAME_PATTERN=Pattern.compile("([^/]+)(/(.+))?");
 }

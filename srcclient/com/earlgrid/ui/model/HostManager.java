@@ -17,9 +17,10 @@ public class HostManager extends ArrayList<RemoteHostConfiguration>{
     add(new RemoteHostConfiguration("remote4.host.com", 22, pkCredentials));
 }
 
-  public RemoteHostConfiguration getByHostName(String hostnameToFind) {
+  public RemoteHostConfiguration getBySessionName(String sessionName) {
     for(RemoteHostConfiguration host : this){
-      if(host.hostname.equals(hostnameToFind)){
+      String currentSessionName=host.credentials.getUsername()+"@"+host.hostname+":"+host.port;
+      if(currentSessionName.equals(sessionName)){
         return host;
       }
     }

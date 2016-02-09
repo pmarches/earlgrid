@@ -14,6 +14,7 @@ RUN mkdir /var/run/sshd
 #RUN /usr/bin/ssh-keygen -A
 COPY dockerTestHostSSHKey.rsa /etc/ssh/ssh_host_rsa_key
 COPY dockerTestHostSSHKey.rsa.pub /etc/ssh/ssh_host_rsa_key.pub
+RUN chmod 600 /etc/ssh/ssh_host_rsa_key
 
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile

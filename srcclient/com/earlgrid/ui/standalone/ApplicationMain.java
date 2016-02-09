@@ -60,28 +60,29 @@ public class ApplicationMain {
   private void execute(ApplicationCmdLineOptions args) {
     this.args = args;
 
-    if (args.sessionName!=null) {
-      new SelectHostToConnectWindow(this);
-    } else {
-      try {
-        client=new LoopbackRemotingClient(interactiveFormHandler);
-      } catch (IOException e) {
-        log.error("Exception caught in "+getClass().getName(), e);
+    try {
+      if (args.sessionName==null) {
+        new SelectHostToConnectWindow(this);
       }
-      mainWindow.open();
-      //////////////////// FIXME TESTING STUFF HERE /////////////////////
-      if(true){
-        try {
+      else if(args.sessionName.equals("local")){
+        client=new LoopbackRemotingClient(interactiveFormHandler);
+        //////////////////// FIXME TESTING STUFF HERE /////////////////////
+        if(true){
           client.requestCommandExecution("mock output 11 5");
           client.requestCommandExecution("mock who");
-//          client.requestCommandExecution("mock who|delay");
-//          client.requestCommandExecution("mock output 3 200");
-        } catch (Exception e) {
-          e.printStackTrace();
+          //          client.requestCommandExecution("mock who|delay");
+          //          client.requestCommandExecution("mock output 3 200");
         }
+        //////////////////// FIXME TESTING STUFF HERE /////////////////////
       }
-      //////////////////// FIXME TESTING STUFF HERE /////////////////////
+      else{
+        openRemoteTerminalWindow(hostManager.getBySessionName(args.sessionName));
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      return;
     }
+    mainWindow.open();
 
 
     // run the event loop as long as the window is open
