@@ -21,13 +21,10 @@ public class ResourceCache {
   public final Image COLLAPSE_ICON;
   public final Font monospaceFont;
   public final Font fontAwesomeFont;
-  public final Image appIcon;
+  public final Image APPLICATION_ICON;
   public final Image TIMER_ICON;
   public final Image EDIT_ICON;
   public final Image COMMAND_ICON;
-
-  //See https://fortawesome.github.io/Font-Awesome/cheatsheet/
-  public final String FA_CLOSE="\uf00d";
 
   public ResourceCache() {
     CLOSE_ICON_RED=new Image(Display.getDefault(), "resources/png/circle-x-2x-red.png");
@@ -41,7 +38,7 @@ public class ResourceCache {
     Display.getCurrent().loadFont("resources/fontawesome-webfont.ttf"); //This will not work if the client is delivered in a jarfile, see http://www.patrikdufresne.com/en/fontawesome-swt/
     fontAwesomeFont = new Font(Display.getDefault(), new FontData("FontAwesome", 12, SWT.NONE));
     
-    appIcon = new Image(Display.getDefault(), "resources/png/terminal-8x.png");
+    APPLICATION_ICON = new Image(Display.getDefault(), "resources/small-7086-10298825.png");
   }
 
 }

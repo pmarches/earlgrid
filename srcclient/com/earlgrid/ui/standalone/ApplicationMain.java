@@ -122,7 +122,7 @@ public class ApplicationMain {
     return client.getSessionModel();
   }
 
-  public static ApplicationMain getInstance() {
+  synchronized public static ApplicationMain getInstance() {
     if(instance==null){
       instance=new ApplicationMain();
       instance.createWindow();

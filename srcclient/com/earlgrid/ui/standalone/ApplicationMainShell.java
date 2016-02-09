@@ -33,7 +33,7 @@ public class ApplicationMainShell {
     getShell().setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
     getShell().setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_GRAY));
     getShell().setFont(ResourceCache.getInstance().monospaceFont);
-    getShell().setImage(ResourceCache.getInstance().appIcon);
+    getShell().setImage(ResourceCache.getInstance().APPLICATION_ICON);
 
     getShell().addListener(SWT.Close, new Listener() { 
       @Override 
