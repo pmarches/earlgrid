@@ -66,24 +66,24 @@ public class ApplicationMain {
       }
       else if(args.sessionName.equals("local")){
         client=new LoopbackRemotingClient(interactiveFormHandler);
-        //////////////////// FIXME TESTING STUFF HERE /////////////////////
-        if(true){
-          client.requestCommandExecution("mock output 11 5");
-          client.requestCommandExecution("mock who");
-          //          client.requestCommandExecution("mock who|delay");
-          //          client.requestCommandExecution("mock output 3 200");
-        }
-        //////////////////// FIXME TESTING STUFF HERE /////////////////////
       }
       else{
         openRemoteTerminalWindow(hostManager.getBySessionName(args.sessionName));
       }
+      mainWindow.open();
+
+      //////////////////// FIXME TESTING STUFF HERE /////////////////////
+      if(true){
+        client.requestCommandExecution("mock output 11 5");
+        client.requestCommandExecution("mock who");
+        //client.requestCommandExecution("mock who|delay");
+        //client.requestCommandExecution("mock output 3 200");
+      }
+      //////////////////// FIXME TESTING STUFF HERE /////////////////////
     } catch (Exception e) {
       e.printStackTrace();
       return;
     }
-    mainWindow.open();
-
 
     // run the event loop as long as the window is open
     while (!display.isDisposed()) {
