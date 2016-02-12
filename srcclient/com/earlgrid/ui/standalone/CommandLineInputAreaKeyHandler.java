@@ -90,6 +90,7 @@ public class CommandLineInputAreaKeyHandler extends HiearchicalKeyListener {
     if(commandLineInputArea.currentEditionMode==InputAreaMode.SHELL_MODE){
       new Thread(){
         public void run() {
+          setName("Accepted command line input Thread");
           app.acceptUserCommand(commandStringInTextBox);
         }
       }.start();

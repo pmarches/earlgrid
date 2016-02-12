@@ -4,17 +4,26 @@ import java.util.Hashtable;
 
 import com.earlgrid.core.session.ServerSideShellSession;
 import com.earlgrid.core.shellcommands.MockCmdArguments;
+import com.earlgrid.core.shellcommands.coreutils.CSVCmdArguments;
 import com.earlgrid.core.shellcommands.coreutils.CdCmdArguments;
 import com.earlgrid.core.shellcommands.coreutils.ClearCmdArguments;
 import com.earlgrid.core.shellcommands.coreutils.ClipboardCmdArguments;
 import com.earlgrid.core.shellcommands.coreutils.CutCmdArguments;
 import com.earlgrid.core.shellcommands.coreutils.DelayCmdArguments;
+import com.earlgrid.core.shellcommands.coreutils.ExitCmdArguments;
+import com.earlgrid.core.shellcommands.coreutils.ExternalProcessCmdArguments;
+import com.earlgrid.core.shellcommands.coreutils.GrepCmdArguments;
+import com.earlgrid.core.shellcommands.coreutils.HistoryCmdArguments;
 import com.earlgrid.core.shellcommands.coreutils.LsCmdArguments;
+import com.earlgrid.core.shellcommands.coreutils.PerrorCmdArguments;
 import com.earlgrid.core.shellcommands.coreutils.PromptCmdArguments;
 import com.earlgrid.core.shellcommands.coreutils.PwdCmdArguments;
+import com.earlgrid.core.shellcommands.coreutils.ReadCmdArguments;
 import com.earlgrid.core.shellcommands.coreutils.SeqCmdArguments;
 import com.earlgrid.core.shellcommands.coreutils.SortCmdArguments;
+import com.earlgrid.core.shellcommands.coreutils.TabCmdArguments;
 import com.earlgrid.core.shellcommands.coreutils.WcCmdArguments;
+import com.earlgrid.core.shellcommands.coreutils.WriteCmdArguments;
 import com.earlgrid.core.shellcommands.tjoin.TJoinCmdArguments;
 import com.earlgrid.core.shellparser.ResolvedSingleCommand;
 

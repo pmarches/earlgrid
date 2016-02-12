@@ -1,4 +1,4 @@
-package com.earlgrid.core.shellcommands;
+package com.earlgrid.core.shellcommands.coreutils;
 //package com.earlgrid.core.shellcommands;
 //import java.util.List;
 //

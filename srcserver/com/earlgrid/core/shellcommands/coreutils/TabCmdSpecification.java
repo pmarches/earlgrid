@@ -1,4 +1,4 @@
-package com.earlgrid.core.shellcommands;
+package com.earlgrid.core.shellcommands.coreutils;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -9,6 +9,7 @@ import com.earlgrid.core.sessionmodel.CmdExitStatus;
 import com.earlgrid.core.sessionmodel.TabularOutput;
 import com.earlgrid.core.sessionmodel.TabularOutputColumnHeader;
 import com.earlgrid.core.sessionmodel.TabularOutputRow;
+import com.earlgrid.core.shellcommands.BaseCmdSpecification;
 
 public class TabCmdSpecification extends BaseCmdSpecification<TabCmdArguments> {
   protected TabularOutput outputCollector;

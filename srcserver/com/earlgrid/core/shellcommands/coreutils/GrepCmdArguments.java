@@ -1,5 +1,7 @@
-package com.earlgrid.core.shellcommands;
+package com.earlgrid.core.shellcommands.coreutils;
 
+import com.earlgrid.core.shellcommands.BaseCmdArguments;
+import com.earlgrid.core.shellcommands.BaseCmdSpecification;
 
 public class GrepCmdArguments extends BaseCmdArguments<GrepCmdArguments> {
   boolean discardMatches=false;

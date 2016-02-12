@@ -1,6 +1,9 @@
-package com.earlgrid.core.shellcommands;
+package com.earlgrid.core.shellcommands.coreutils;
 
 import java.util.Arrays;
+
+import com.earlgrid.core.shellcommands.BaseCmdArguments;
+import com.earlgrid.core.shellcommands.BaseCmdSpecification;
 
 public class ReadCmdArguments extends BaseCmdArguments<ReadCmdArguments> {
   String inputFilePath;

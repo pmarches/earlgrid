@@ -106,7 +106,12 @@ public class IOConnection {
     }
     else if(topLevelMsg.getMessageType()==PbTopLevel.MessageType.REQUEST){
       //TODO Use Threadpool here?
-      new Thread(()-> messageHandler.onNotificationOrRequestReceived(topLevelMsg)).start();
+      new Thread() {
+        public void run() {
+          setName("IOConnection REQUEST handling Thread");
+          messageHandler.onNotificationOrRequestReceived(topLevelMsg);
+        }
+      }.start();
     }
     else{
       log.error("Unhandeled message "+topLevelMsg);

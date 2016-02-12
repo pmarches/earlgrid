@@ -1,8 +1,9 @@
-package com.earlgrid.core.shellcommands;
+package com.earlgrid.core.shellcommands.coreutils;
 import java.util.regex.Pattern;
 
 import com.earlgrid.core.sessionmodel.TabularOutputColumnHeader;
 import com.earlgrid.core.sessionmodel.TabularOutputRow;
+import com.earlgrid.core.shellcommands.BaseCmdSpecification;
 
 public class GrepCmdSpecification extends BaseCmdSpecification<GrepCmdArguments> {
   private Pattern userPattern;

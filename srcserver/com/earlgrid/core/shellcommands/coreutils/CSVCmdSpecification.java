@@ -1,4 +1,4 @@
-package com.earlgrid.core.shellcommands;
+package com.earlgrid.core.shellcommands.coreutils;
 
 import java.io.File;
 import java.io.FileReader;
@@ -14,6 +14,7 @@ import com.earlgrid.core.sessionmodel.CmdBeginStatus;
 import com.earlgrid.core.sessionmodel.CmdExitStatus;
 import com.earlgrid.core.sessionmodel.TabularOutputColumnHeader;
 import com.earlgrid.core.sessionmodel.TabularOutputRow;
+import com.earlgrid.core.shellcommands.BaseCmdSpecification;
 
 
 public class CSVCmdSpecification extends BaseCmdSpecification<CSVCmdArguments> {

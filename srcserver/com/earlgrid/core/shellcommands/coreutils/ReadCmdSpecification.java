@@ -1,4 +1,4 @@
-package com.earlgrid.core.shellcommands;
+package com.earlgrid.core.shellcommands.coreutils;
 
 import java.io.File;
 import java.util.List;
@@ -13,6 +13,7 @@ import com.earlgrid.core.sessionmodel.TabularOutputColumn;
 import com.earlgrid.core.sessionmodel.TabularOutputColumnHeader;
 import com.earlgrid.core.sessionmodel.TabularOutputRow;
 import com.earlgrid.core.sessionmodel.TabularOutput.ColumnType;
+import com.earlgrid.core.shellcommands.BaseCmdSpecification;
 
 public class ReadCmdSpecification extends BaseCmdSpecification<ReadCmdArguments> {
   private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(ReadCmdSpecification.class);

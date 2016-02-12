@@ -1,6 +1,7 @@
-package com.earlgrid.core.shellcommands;
+package com.earlgrid.core.shellcommands.coreutils;
 
 import com.earlgrid.core.sessionmodel.TabularOutputRow;
+import com.earlgrid.core.shellcommands.BaseCmdSpecification;
 import com.earlgrid.core.text.LineOfTextToSingleColumnOutputConverter;
 
 public class ExternalProcessCmdSpecification extends BaseCmdSpecification<ExternalProcessCmdArguments> {

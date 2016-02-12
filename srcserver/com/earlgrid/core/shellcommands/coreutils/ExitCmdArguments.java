@@ -1,6 +1,7 @@
-package com.earlgrid.core.shellcommands;
+package com.earlgrid.core.shellcommands.coreutils;
 
-
+import com.earlgrid.core.shellcommands.BaseCmdArguments;
+import com.earlgrid.core.shellcommands.BaseCmdSpecification;
 
 public class ExitCmdArguments extends BaseCmdArguments<ExitCmdArguments> {
   @Override

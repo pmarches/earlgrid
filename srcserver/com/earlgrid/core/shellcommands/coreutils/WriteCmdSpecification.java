@@ -1,4 +1,4 @@
-package com.earlgrid.core.shellcommands;
+package com.earlgrid.core.shellcommands.coreutils;
 
 import java.io.File;
 
@@ -12,6 +12,7 @@ import com.earlgrid.core.sessionmodel.CmdExitStatus;
 import com.earlgrid.core.sessionmodel.TabularOutputColumn;
 import com.earlgrid.core.sessionmodel.TabularOutputColumnHeader;
 import com.earlgrid.core.sessionmodel.TabularOutputRow;
+import com.earlgrid.core.shellcommands.BaseCmdSpecification;
 
 public class WriteCmdSpecification extends BaseCmdSpecification<WriteCmdArguments> {
   private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(WriteCmdSpecification.class);
