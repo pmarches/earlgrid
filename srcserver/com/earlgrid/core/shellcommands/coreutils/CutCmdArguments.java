@@ -8,7 +8,8 @@ import com.earlgrid.core.shellcommands.BaseCmdSpecification;
 public class CutCmdArguments extends BaseCmdArguments<CutCmdArguments> {
   boolean discardMatches=false;
   ArrayList<String> columnNameFilter=new ArrayList<>();
-
+  String selectionExpression;
+  
   @Override
   public BaseCmdSpecification<CutCmdArguments> newCmdSpecification() {
     return new CutCmdSpecification();
@@ -21,6 +22,10 @@ public class CutCmdArguments extends BaseCmdArguments<CutCmdArguments> {
       if("-f".equals(arg)){
         arg=argumentsArray[++i];
         columnNameFilter.add(arg);
+      }
+      else if("-s".equals(arg)){
+        arg=argumentsArray[++i];
+        selectionExpression=arg;
       }
       else if("-v".equals(arg)){
         discardMatches=true;

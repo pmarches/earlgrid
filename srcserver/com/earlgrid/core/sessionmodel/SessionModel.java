@@ -104,11 +104,7 @@ public class SessionModel implements SessionModelChangeObserver {
    * @throws Exception
    */
   @Deprecated
-  public void appendHistoryRecord(ExecutionHistoryRecord newExecutionRecord) throws Exception {
-    if(getNextTaskId()!=newExecutionRecord.taskId){
-      throw new Exception("Mock tasks need to be created in the proper order. You tried adding the mock task with id="+newExecutionRecord.taskId);
-    }
-    
+  public void appendHistoryRecord(ExecutionHistoryRecord newExecutionRecord) {
     onUpstreamTaskCreated(new TaskCreatedStatus(newExecutionRecord.taskId, -1, newExecutionRecord.userEditedCommand));
     onUpstreamColumnHeader(newExecutionRecord.out.columnHeader);
     for(TabularOutputRow row : newExecutionRecord.out.rows){

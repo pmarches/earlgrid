@@ -38,7 +38,7 @@ public class ClipboardCmdSpecification extends CollectingCmdSpecification<Clipbo
     clipboardRequest.setOperation(ClipboardOperation.WRITE_CLIPBOARD);
     StringBuffer newClipboardContent=new StringBuffer();
     for(int i=0;i< outputCollector.getRowCount(); i++){
-      newClipboardContent.append(super.outputCollector.getRow(i).getCellAtColumn(0));
+      newClipboardContent.append(super.outputCollector.getRow(i).getCellAtColumn(0)); //FIXME Get all the cells, not only the first one
       newClipboardContent.append(System.lineSeparator());
     }
     clipboardRequest.setClipboardContent(newClipboardContent.toString());

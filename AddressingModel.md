@@ -4,9 +4,24 @@ Goal: Make it easy to identify a group of cells from a tabular output using a si
 
 Use cases
 ----
-- Copy complete output of a full session to email, etc..
-- Select two columns from the previous output, while grepping on a third column
+- Select the full output (all columns and call rows)
 
+
+Regions
+--
+
+Row/Column Range
+ - Contiguous
+ - Can be a single Row/Column
+ - Can be all (need to have some sort of wildcard)
+
+Row/Column Selection
+ - An ordered list of Row/Column Range
+
+TabularOutputRegion
+ - Consists of a ColumnRegion and a RowRegion
+ - Evaluated row by row, then each column
+ 
 
 Operation principles:
 --
@@ -34,6 +49,18 @@ Syntax
 `[<process>.][<ouput>.]<Column>[.<row>]` 
 
 REF:REF
+
+Selection:
+--
+If the expression starts with a +, then start with the empty set
+If the expression starts with a -, then start with the full set
+
++A+C:E-D	==> A,C,E
+,A,C:E-D
+
++10:20-15   ==> 10:14+16:20
+
++A+C:E-D+10:20-15
 
 
 Row ranges:

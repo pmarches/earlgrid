@@ -19,6 +19,9 @@ public class TabularOutputRow extends SessionModelChangeEvent {
   }
 
   public String getCellAtColumn(int columnIndex){
+    if(columnIndex>=cells.length){
+      return "";
+    }
     return cells[columnIndex];
   }
   

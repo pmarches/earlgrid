@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.earlgrid.core.sessionmodel.TabularOutputColumn;
 import com.earlgrid.core.sessionmodel.TabularOutputColumnHeader;
 import com.earlgrid.core.sessionmodel.TabularOutputRow;
+import com.earlgrid.core.sessionmodel.TabularOutputSelection;
 import com.earlgrid.core.shellcommands.BaseCmdSpecification;
 
 
@@ -13,7 +14,10 @@ public class CutCmdSpecification extends BaseCmdSpecification<CutCmdArguments> {
   
   @Override
   public void validateCmdArgumentsBeforeExecution() throws Exception {
-    if(args.columnNameFilter.isEmpty()){
+    if(args.selectionExpression!=null){
+      TabularOutputSelection selection=TabularOutputSelection.newFromString(args.selectionExpression);
+    }
+    else if(args.columnNameFilter.isEmpty()){
       throw new Exception("cut requires at least one pattern. You specified none");
     }
   };

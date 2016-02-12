@@ -11,7 +11,6 @@ import com.earlgrid.core.sessionmodel.TabularOutputColumnHeader;
 import com.earlgrid.core.sessionmodel.TabularOutputRow;
 
 public class TabCmdSpecification extends BaseCmdSpecification<TabCmdArguments> {
-  private static final Pattern DEFAULT_WHITESPACE_REGEX = Pattern.compile("\\s+");
   protected TabularOutput outputCollector;
 
   @Override
@@ -36,11 +35,11 @@ public class TabCmdSpecification extends BaseCmdSpecification<TabCmdArguments> {
     if(args.columnWidthStr!=null){
       numberOfColumns=tabulateOnColumnWidth(resultingLines);
     }
-    else if(args.regexDelimiterStr!=null){
-      numberOfColumns=tabulateOnRegexDelimiter(resultingLines);
+    else if(args.wellAligned){
+      numberOfColumns=tabulateOnWellAlignedWhiteSpaceDelimiter(resultingLines);
     }
     else {
-      numberOfColumns=tabulateOnWellAlignedWhiteSpaceDelimiter(resultingLines);
+      numberOfColumns=tabulateOnRegexDelimiter(resultingLines);
     }
 
     String[] generatedColumnNames=new String[numberOfColumns];
@@ -187,13 +186,7 @@ public class TabCmdSpecification extends BaseCmdSpecification<TabCmdArguments> {
   }
 
   protected int tabulateOnRegexDelimiter(LinkedList<String[]> resultingLines) throws Exception {
-    Pattern rowRegex;
-    if(args.regexDelimiterStr!=null){
-      rowRegex=Pattern.compile(args.regexDelimiterStr);
-    }
-    else{
-      rowRegex=DEFAULT_WHITESPACE_REGEX;
-    }
+    Pattern rowRegex=Pattern.compile(args.regexDelimiterStr);
 
     int maxNumberOfColumns=0;
     int nbInputRowsToBeRead=outputCollector.getRowCount();

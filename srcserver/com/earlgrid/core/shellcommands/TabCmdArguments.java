@@ -2,8 +2,9 @@ package com.earlgrid.core.shellcommands;
 
 public class TabCmdArguments extends BaseCmdArguments<TabCmdArguments> {
   boolean hasHeaderRow=false;
-  String regexDelimiterStr;
+  String regexDelimiterStr="\\s+";
   String columnWidthStr;
+  boolean wellAligned;
 
   @Override
   public BaseCmdSpecification<TabCmdArguments> newCmdSpecification() {
@@ -24,6 +25,9 @@ public class TabCmdArguments extends BaseCmdArguments<TabCmdArguments> {
       }
       else if("-h".equals(arg)){
         hasHeaderRow=true;
+      }
+      else if("-a".equals(arg)){
+        wellAligned=true;
       }
       else{
         throw new Exception("Invalid argument '"+arg+"'");
