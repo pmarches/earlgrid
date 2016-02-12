@@ -1,6 +1,8 @@
 package com.earlgrid.core.sessionmodel;
 
-public class TabularOutputColumnRangeList {
+import java.util.Iterator;
+
+public class TabularOutputColumnRangeList implements Iterable<Integer> {
   DiscreteIntegerRangeList columnRange=new DiscreteIntegerRangeList();
   
   public static TabularOutputColumnRangeList newFromString(String startColNameStr, String endColNameStr) {
@@ -58,4 +60,10 @@ public class TabularOutputColumnRangeList {
     columnRange.minusThis(other.columnRange);
     return this;
   }
+
+  @Override
+  public Iterator<Integer> iterator() {
+    return columnRange.iterator();
+  }
+
 }

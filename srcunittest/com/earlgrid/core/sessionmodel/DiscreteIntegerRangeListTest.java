@@ -37,6 +37,8 @@ public class DiscreteIntegerRangeListTest {
     assertEquals(twentyEight, base.minus(DiscreteIntegerRangeList.newFromRangeListString("2-26")));
     assertEquals(base, base.minus(DiscreteIntegerRangeList.newFromRangeListString("")));
     assertEquals("10-20,22", base.minus(DiscreteIntegerRangeList.newFromRangeListString("24-30")).toString());
+    
+    assertEquals("0,3-7", DiscreteIntegerRangeList.newFromRangeListString("0-7").minus(DiscreteIntegerRangeList.newFromRangeListString("1-2")).toString());
   }
   
   @Test

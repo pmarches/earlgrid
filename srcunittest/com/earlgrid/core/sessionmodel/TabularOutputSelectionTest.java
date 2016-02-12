@@ -16,6 +16,9 @@ public class TabularOutputSelectionTest {
     TabularOutputSelection sel=TabularOutputSelection.newFromString("+A+C:F-D+10:20-15-U");
     assertEquals("A,C,E:F", sel.getColumnSelection().toString());
     assertEquals("10:14,16:20", sel.getRowSelection().toString());
+
+    TabularOutputSelection sel2=TabularOutputSelection.newFromString("+A:H-B:C");
+    assertEquals("A,D:H", sel2.getColumnSelection().toString());
   }
 
 }

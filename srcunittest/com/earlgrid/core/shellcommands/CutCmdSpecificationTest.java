@@ -20,14 +20,14 @@ public class CutCmdSpecificationTest {
     assertEquals("result was "+onlyAColumn.getOut().toString(), "A", onlyAColumn.getOut().getColumnHeader().get(0).toString());
 
     ExecutionHistoryRecord otherColumnThanC = testClient.requestCommandExecution("history 0 | cut -v -f 'C'");
-    assertArrayEquals("result was "+otherColumnThanC.getOut().toString(), "A,B,D".split(","), otherColumnThanC.getOut().getColumnHeadersAsString());
+    assertArrayEquals("result was "+otherColumnThanC.getOut().columnHeader.toString(), "A,B,D".split(","), otherColumnThanC.getOut().getColumnHeadersAsString());
     
     ExecutionHistoryRecord nonExistantColumn = testClient.requestCommandExecution("history 0 | cut -f TTT ");
     assertEquals("result was "+nonExistantColumn.getOut().toString(), 0, nonExistantColumn.getOut().getRowCount());
     assertEquals("result was "+nonExistantColumn.getOut().toString(), 0, nonExistantColumn.getOut().getColumnHeader().size());
     
-    ExecutionHistoryRecord aAndCColumns = testClient.requestCommandExecution("history 0 | cut -s A:C-B");
-    assertArrayEquals("result was "+aAndCColumns.getOut().toString(), "A,C".split(","), aAndCColumns.getOut().getColumnHeadersAsString());
+    ExecutionHistoryRecord aAndOtherColumns = testClient.requestCommandExecution("history 0 | cut -s +A:H-B:C");
+    assertArrayEquals("result was "+aAndOtherColumns.getOut().columnHeader.toString(), "A".split(","), aAndOtherColumns.getOut().getColumnHeadersAsString());
 
     testClient.close();
   }

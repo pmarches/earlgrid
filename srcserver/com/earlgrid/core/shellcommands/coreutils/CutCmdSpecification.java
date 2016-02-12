@@ -15,7 +15,6 @@ public class CutCmdSpecification extends BaseCmdSpecification<CutCmdArguments> {
   @Override
   public void validateCmdArgumentsBeforeExecution() throws Exception {
     if(args.selectionExpression!=null){
-      TabularOutputSelection selection=TabularOutputSelection.newFromString(args.selectionExpression);
     }
     else if(args.columnNameFilter.isEmpty()){
       throw new Exception("cut requires at least one pattern. You specified none");
@@ -24,13 +23,23 @@ public class CutCmdSpecification extends BaseCmdSpecification<CutCmdArguments> {
 
   @Override
   public void onUpstreamCommandColumnHeader(TabularOutputColumnHeader parentColumnHeader) throws Exception {
-    TabularOutputColumnHeader newColumns=new TabularOutputColumnHeader(taskId);
-
     ArrayList<Integer> keptColumnIndexes=new ArrayList<>();
-    for(int columnIndex=0; columnIndex<parentColumnHeader.size(); columnIndex++){
-      boolean columnNameMatchesFilter=(args.columnNameFilter.contains(parentColumnHeader.get(columnIndex).name));
-      if(columnNameMatchesFilter ^ args.discardMatches){
-        keptColumnIndexes.add(columnIndex);
+
+    if(args.columnNameFilter.isEmpty()==false){
+      for(int columnIndex=0; columnIndex<parentColumnHeader.size(); columnIndex++){
+        boolean columnNameMatchesFilter=(args.columnNameFilter.contains(parentColumnHeader.get(columnIndex).name));
+        if(columnNameMatchesFilter ^ args.discardMatches){
+          keptColumnIndexes.add(columnIndex);
+        }
+      }
+    }
+    else if(args.selectionExpression!=null){
+      int numberOfParentColumns=parentColumnHeader.size();
+      TabularOutputSelection selection=TabularOutputSelection.newFromString(args.selectionExpression);
+      for(Integer colIndex : selection.getColumnSelection()){
+        if(colIndex.intValue()<numberOfParentColumns){
+          keptColumnIndexes.add(colIndex);
+        }
       }
     }
 
@@ -46,6 +55,7 @@ public class CutCmdSpecification extends BaseCmdSpecification<CutCmdArguments> {
       outputColumnHeaders[i]=parentColumnHeader.get(keptColumnIndexes.get(i));
     }
 
+    TabularOutputColumnHeader newColumns=new TabularOutputColumnHeader(taskId);
     newColumns.setColumnHeaders(outputColumnHeaders);
     emit(newColumns);
   }

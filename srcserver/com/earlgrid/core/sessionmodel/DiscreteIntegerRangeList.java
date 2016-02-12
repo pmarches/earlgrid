@@ -172,7 +172,7 @@ public class DiscreteIntegerRangeList implements Iterable<Integer> {
      *  - Only the succeding range overlapsOrAdjacent on the newRange
      *  - Neither preceding nor succeding overlapOrAdjacent on the newRange
      */
-
+//0:7 - 1:2
     int indexOfFirstRangeThatOverlaps=Collections.binarySearch(ranges, rangeToRemove);
     if(indexOfFirstRangeThatOverlaps<0){
       indexOfFirstRangeThatOverlaps= -(indexOfFirstRangeThatOverlaps+1);
@@ -208,7 +208,7 @@ public class DiscreteIntegerRangeList implements Iterable<Integer> {
           currentRange.end=rangeToRemove.start-1;
         }
         else{
-          DiscreteIntegerRange rightPortion=new DiscreteIntegerRange(rangeToRemove.start+1, currentRange.end);
+          DiscreteIntegerRange rightPortion=new DiscreteIntegerRange(rangeToRemove.end+1, currentRange.end);
           ranges.add(i+1, rightPortion);
           currentRange.end=rangeToRemove.start-1;
           break;
