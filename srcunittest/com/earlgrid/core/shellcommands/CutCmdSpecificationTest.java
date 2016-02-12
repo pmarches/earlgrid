@@ -27,7 +27,7 @@ public class CutCmdSpecificationTest {
     assertEquals("result was "+nonExistantColumn.getOut().toString(), 0, nonExistantColumn.getOut().getColumnHeader().size());
     
     ExecutionHistoryRecord aAndOtherColumns = testClient.requestCommandExecution("history 0 | cut -s +A:H-B:C");
-    assertArrayEquals("result was "+aAndOtherColumns.getOut().columnHeader.toString(), "A".split(","), aAndOtherColumns.getOut().getColumnHeadersAsString());
+    assertArrayEquals("result was "+aAndOtherColumns.getOut().columnHeader.toString(), "A,D".split(","), aAndOtherColumns.getOut().getColumnHeadersAsString());
 
     testClient.close();
   }

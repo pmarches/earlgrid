@@ -37,7 +37,7 @@ public class CutCmdSpecification extends BaseCmdSpecification<CutCmdArguments> {
       int numberOfParentColumns=parentColumnHeader.size();
       TabularOutputSelection selection=TabularOutputSelection.newFromString(args.selectionExpression);
       for(Integer colIndex : selection.getColumnSelection()){
-        if(colIndex.intValue()<numberOfParentColumns){
+        if(colIndex<numberOfParentColumns){
           keptColumnIndexes.add(colIndex);
         }
       }
