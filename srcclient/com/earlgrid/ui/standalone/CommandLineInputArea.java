@@ -5,6 +5,7 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 
@@ -33,6 +34,7 @@ public class CommandLineInputArea extends Composite {
     createNorthContributionArea();
     createWestContributionArea();
     
+    ((GridLayout) getLayout()).horizontalSpacing=3;
     commandLineTxt = new StyledText(this, SWT.SINGLE);
     commandLineTxt.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
     commandLineTxt.addKeyListener(new CommandLineInputAreaKeyHandler(terminalWindow.terminalKeyListener, this));
