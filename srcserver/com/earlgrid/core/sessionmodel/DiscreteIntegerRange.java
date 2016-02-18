@@ -112,4 +112,15 @@ public class DiscreteIntegerRange implements Comparable<DiscreteIntegerRange> {
     return false;
   }
 
+  public boolean overlapsOnLeftOf(DiscreteIntegerRange other){
+    return start<=other.end && start>=other.start;
+  }
+
+  public boolean overlapsOnRightOf(DiscreteIntegerRange other) {
+    return end>=other.start && end<=other.end;
+  }
+
+  public boolean isEmpty() {
+    return start==-1 || end==-1;
+  }
 }

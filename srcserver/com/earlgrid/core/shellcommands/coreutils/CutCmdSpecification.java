@@ -2,6 +2,7 @@ package com.earlgrid.core.shellcommands.coreutils;
 
 import java.util.ArrayList;
 
+import com.earlgrid.core.sessionmodel.DiscreteIntegerRange;
 import com.earlgrid.core.sessionmodel.TabularOutputColumn;
 import com.earlgrid.core.sessionmodel.TabularOutputColumnHeader;
 import com.earlgrid.core.sessionmodel.TabularOutputRow;
@@ -34,12 +35,12 @@ public class CutCmdSpecification extends BaseCmdSpecification<CutCmdArguments> {
       }
     }
     else if(args.selectionExpression!=null){
-      int numberOfParentColumns=parentColumnHeader.size();
+      DiscreteIntegerRange parentColumnRange=new DiscreteIntegerRange(0, parentColumnHeader.size()-1);
       TabularOutputSelection selection=TabularOutputSelection.newFromString(args.selectionExpression);
+      selection.getColumnSelection().intersectionThis(parentColumnRange);
+      
       for(Integer colIndex : selection.getColumnSelection()){
-        if(colIndex<numberOfParentColumns){
-          keptColumnIndexes.add(colIndex);
-        }
+        keptColumnIndexes.add(colIndex);
       }
     }
 

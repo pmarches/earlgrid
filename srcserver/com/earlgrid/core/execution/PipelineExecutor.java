@@ -27,10 +27,9 @@ public class PipelineExecutor implements ThreadFactory {
   
   public void execute(ResolvedCommandChain cmdChain) {
     BaseCmdSpecification<?>[] pipelineTasks;
-    BlockingQueue<SessionModelChangeEvent> inputQueue;
+    BlockingQueue<SessionModelChangeEvent> inputQueue=null;
     try {
       pipelineTasks = new BaseCmdSpecification[cmdChain.pipedCommands.size()];
-      inputQueue = null;
       for(int i=0; i<pipelineTasks.length; i++){
         BlockingQueue<SessionModelChangeEvent> outputQueue=new ArrayBlockingQueue<>(1);
         BaseCmdSpecification<?> task = session.getCommandRegistry().resolveCommand(session, cmdChain.pipedCommands.get(i), taskId);
@@ -50,7 +49,7 @@ public class PipelineExecutor implements ThreadFactory {
       return;
     }
     
-    ExecutorService threadPool = Executors.newFixedThreadPool(cmdChain.numberOfCommands());
+    ExecutorService threadPool = Executors.newFixedThreadPool(cmdChain.numberOfCommands(), r->new Thread(threadGroup, r));
     for(int i=0; i<pipelineTasks.length; i++){
       threadPool.submit(pipelineTasks[i]);
     }

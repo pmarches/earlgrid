@@ -16,6 +16,10 @@ public class DiscreteIntegerRangeList implements Iterable<Integer> {
   public DiscreteIntegerRangeList() {
   }
 
+  public static DiscreteIntegerRangeList newEmpty() {
+    return new DiscreteIntegerRangeList();
+  }
+
   @Override
   public String toString() {
     return ranges.stream().map(DiscreteIntegerRange::toString).collect(Collectors.joining(","));
@@ -26,6 +30,9 @@ public class DiscreteIntegerRangeList implements Iterable<Integer> {
   }
 
   public DiscreteIntegerRangeList unionThis(DiscreteIntegerRange rangeToAdd){
+    if(rangeToAdd.isEmpty()){
+      return this;
+    }
     int indexWhereThisRangeStarts=Collections.binarySearch(ranges, rangeToAdd);
     if(indexWhereThisRangeStarts>=0){ //We have an existing Range that starts at this position
       unionThisStartingAtRange(rangeToAdd, indexWhereThisRangeStarts);
@@ -138,7 +145,7 @@ public class DiscreteIntegerRangeList implements Iterable<Integer> {
     return result.unionThis(DiscreteIntegerRange.newFromString(startStr, endStr));
   }
 
-  public static DiscreteIntegerRangeList newFromRangeListString(String rangeListStr) {
+  public static DiscreteIntegerRangeList newFromString(String rangeListStr) {
     DiscreteIntegerRangeList result=new DiscreteIntegerRangeList();
     for(String range : rangeListStr.split(",")){
       result.unionThis(DiscreteIntegerRange.newFromString(range));
@@ -165,6 +172,9 @@ public class DiscreteIntegerRangeList implements Iterable<Integer> {
   }
 
   public DiscreteIntegerRangeList minusThis(DiscreteIntegerRange rangeToRemove) {
+    if(rangeToRemove.isEmpty()){
+      return this;
+    }
     /**
      * Possible cases: 
      *  - We have a preceding range that overlapsOrAdjacent on the newRange
@@ -199,8 +209,8 @@ public class DiscreteIntegerRangeList implements Iterable<Integer> {
          * - other is strictly to the right (can trim the end)
          * - other is in the middle (trim the end, and insert new node)
          */
-        boolean otherOnLeftSide=currentRange.start<=rangeToRemove.end && currentRange.start>=rangeToRemove.start;
-        boolean otherOnRightSide=currentRange.end>=rangeToRemove.start && currentRange.end<=rangeToRemove.end;
+        boolean otherOnLeftSide=currentRange.overlapsOnLeftOf(rangeToRemove);
+        boolean otherOnRightSide=currentRange.overlapsOnRightOf(rangeToRemove);
         if(otherOnLeftSide){
           currentRange.start=rangeToRemove.end+1;
         }
@@ -243,6 +253,102 @@ public class DiscreteIntegerRangeList implements Iterable<Integer> {
     } else if (!ranges.equals(other.ranges))
       return false;
     return true;
+  }
+  
+  public DiscreteIntegerRangeList intersection(DiscreteIntegerRangeList other) {
+    DiscreteIntegerRangeList copy=new DiscreteIntegerRangeList(this);
+    copy.intersectionThis(other);
+    return copy;
+  }
+  
+  public DiscreteIntegerRangeList intersectionThis(DiscreteIntegerRangeList other) {
+    int thisIndex=0;
+    int otherIndex=0;
+    while(true){
+      if(otherIndex>=other.ranges.size() || thisIndex>=ranges.size()){
+        break;
+      }
+      DiscreteIntegerRange thisRange=this.ranges.get(thisIndex);
+      DiscreteIntegerRange otherRange=other.ranges.get(otherIndex);
+
+      //TODO Premature optimization: if both are equals, we can increment both counters
+
+      /**
+       * Possible cases:
+       * - Full overlap (do nothing)
+       * - No overlap (remove)
+       * - Right overlap (truncate start)
+       * - Left overlap (truncate end)
+       */
+      if(thisRange.overlaps(otherRange)==false){
+        ranges.remove(thisIndex);
+        continue;
+      }
+
+      if(thisRange.isFullyIncludedIn(otherRange)){
+        thisIndex++;
+        continue;
+      }
+      
+      if(thisRange.start<otherRange.start){
+        thisRange.start=otherRange.start;
+      }
+      if(thisRange.end>otherRange.end){
+        //When truncating, the discarded portion may still fit in the next otherRange. Do not discard, but create a remainder range that will be processed in the next loop
+        DiscreteIntegerRange remainder=new DiscreteIntegerRange(otherRange.end+2, thisRange.end);
+        thisRange.end=otherRange.end;
+        ranges.add(thisIndex+1, remainder);
+        thisIndex++;
+        otherIndex++;
+        continue;
+      }
+      
+      //We need to increment either thisIndex or otherIndex depending on which start/end pair occurs next
+      if(thisRange.start<otherRange.start || thisRange.end<otherRange.end){
+        thisIndex++;
+      }
+      else{
+        otherIndex++;
+      }
+      
+    }
+    
+    //Remove anything remaining
+    while(thisIndex<ranges.size()){
+      ranges.remove(ranges.size()-1);
+    }
+    
+    return this;
+  }
+
+  public DiscreteIntegerRangeList intersectionThis(DiscreteIntegerRange otherRange) {
+    if(otherRange.isEmpty()){
+      ranges.clear();
+      return this;
+    }
+
+    for(int i=0; i<ranges.size();){ //i does not increment every time
+      DiscreteIntegerRange thisRange=ranges.get(i);
+      if(thisRange.overlaps(otherRange)==false){
+        ranges.remove(i);
+        continue;
+      }
+      i++;
+      
+      if(thisRange.start<otherRange.start){
+        thisRange.start=otherRange.start;
+      }
+      if(thisRange.end>otherRange.end){
+        thisRange.end=otherRange.end;
+      }
+    }
+    return this;
+  }
+
+  public DiscreteIntegerRangeList intersection(DiscreteIntegerRange otherRange) {
+    DiscreteIntegerRangeList copy=new DiscreteIntegerRangeList(this);
+    copy.intersectionThis(otherRange);
+    return copy;
   }
 
   

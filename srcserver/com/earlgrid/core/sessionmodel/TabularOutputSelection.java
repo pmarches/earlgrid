@@ -1,6 +1,7 @@
 package com.earlgrid.core.sessionmodel;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.codehaus.jparsec.Parser;
 import org.codehaus.jparsec.Parsers;
@@ -62,6 +63,17 @@ public class TabularOutputSelection {
   public DiscreteIntegerRangeList getRowSelection() {
     return summedRowRange;
   }
+  
+  protected static String toRowSelectionString(DiscreteIntegerRange rowRange){
+    if(rowRange.start==rowRange.end){
+      return Integer.toString(rowRange.start);
+    }
+    return rowRange.start+":"+rowRange.end;
+  }
+
+  public String getRowSelectionString() {
+    return summedRowRange.ranges.stream().map(TabularOutputSelection::toRowSelectionString).collect(Collectors.joining(","));
+  }
 
   public TabularOutputColumnRangeList getColumnSelection() {
     return summedColRange;
@@ -102,4 +114,5 @@ public class TabularOutputSelection {
       summedRowRange.minusThis(newRowRangeToAppend);
     }
   }
+
 }
