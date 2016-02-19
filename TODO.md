@@ -1,10 +1,21 @@
 TODO
 ====
+- Create nice demo screenshots
+	- Show read from excel file and pipe to filters
+	- Show bogus ERM commands
+	- Show clipboard
+	- Show system commands
+	- 
 - setup maven
-- Read/Write excel files
-- Connect to SQL database using jdbc
+- investigate if we can use apache metamodel to connect to datasources (http://metamodel.apache.org/)
+	- Read/Write excel files
+	- Connect to SQL databases
+	- mm connect file://path/to/file.csv | session set csv1
+	- mm query csv1 "select count(*) from users"
+	- 
 - diff/patch
 
+- How can we use lambdas to manipulate our grids?
 - Add Mime types to output
 - Process management
 - Handle hiearchical data (JSON,XML)

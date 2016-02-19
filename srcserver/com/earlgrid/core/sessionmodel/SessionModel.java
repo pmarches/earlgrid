@@ -7,7 +7,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.earlgrid.core.session.ExecutionHistory;
 import com.earlgrid.core.session.ExecutionHistoryRecord;
 import com.earlgrid.core.session.SessionEnvironmentVariables;
-import com.earlgrid.core.shellparser.ResolvedCommandChain;
 
 //TODO Should keep the server-side model info in a server-side version of the session model. (taskIdCounter)
 public class SessionModel implements SessionModelChangeObserver {

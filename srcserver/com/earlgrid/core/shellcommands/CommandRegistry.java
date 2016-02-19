@@ -3,7 +3,6 @@ package com.earlgrid.core.shellcommands;
 import java.util.Hashtable;
 
 import com.earlgrid.core.session.ServerSideShellSession;
-import com.earlgrid.core.shellcommands.MockCmdArguments;
 import com.earlgrid.core.shellcommands.coreutils.CSVCmdArguments;
 import com.earlgrid.core.shellcommands.coreutils.CdCmdArguments;
 import com.earlgrid.core.shellcommands.coreutils.ClearCmdArguments;
@@ -20,6 +19,7 @@ import com.earlgrid.core.shellcommands.coreutils.PromptCmdArguments;
 import com.earlgrid.core.shellcommands.coreutils.PwdCmdArguments;
 import com.earlgrid.core.shellcommands.coreutils.ReadCmdArguments;
 import com.earlgrid.core.shellcommands.coreutils.SeqCmdArguments;
+import com.earlgrid.core.shellcommands.coreutils.SessionCmdArguments;
 import com.earlgrid.core.shellcommands.coreutils.SortCmdArguments;
 import com.earlgrid.core.shellcommands.coreutils.TabCmdArguments;
 import com.earlgrid.core.shellcommands.coreutils.WcCmdArguments;
@@ -55,6 +55,7 @@ public class CommandRegistry {
     commandToSpecification.put("pwd", PwdCmdArguments.class);
     commandToSpecification.put("read", ReadCmdArguments.class);
     commandToSpecification.put("seq", SeqCmdArguments.class);
+    commandToSpecification.put("session", SessionCmdArguments.class);
     commandToSpecification.put("sort", SortCmdArguments.class);
     commandToSpecification.put("tab", TabCmdArguments.class);
     commandToSpecification.put("wc", WcCmdArguments.class);

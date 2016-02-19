@@ -19,6 +19,10 @@ Deployment strategy
 - Include GUI libs, SSH, protobuf, 
 - Maybe separate ditrbution per OS, but ideally one big multi os distribution
 
+Session variables
+--
+A session variable is kinda like a temporary file. You can change it within the current session, but it has different values for each session. WE should be abl to store any kind of object in the session model, a JDBC connection, a String, a map, ...
+
 Google protobuf
 ----
 Avro

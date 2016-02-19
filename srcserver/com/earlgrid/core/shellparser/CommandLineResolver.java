@@ -51,7 +51,7 @@ public class CommandLineResolver {
       if(arg.kind!=ArgumentKind.ENVIRONMENT_VARIABLE){
         continue;
       }
-      String replacementValue=sessionVariables.get(arg.argumentStr);
+      String replacementValue=sessionVariables.get(arg.argumentStr).toString();
       arg.kind=ArgumentKind.ORDINARY;
       if(replacementValue!=null){
         arg.argumentStr=replacementValue;
