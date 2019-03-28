@@ -1,3 +1,5 @@
+Thank you to e-j technologies for a [jProfiler licence](https://www.ej-technologies.com/products/jprofiler/overview.html)
+
 Inspiration: 
  https://code.google.com/p/unix4j/
  https://csvkit.readthedocs.org
